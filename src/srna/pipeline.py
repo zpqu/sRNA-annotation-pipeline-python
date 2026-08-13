@@ -113,7 +113,7 @@ def run_steps_02_06(
     from srna.analysis.step06 import run_step06
     from srna.annotation.engine import annotate_sample
 
-    if config.strategy.is_comparison:
+    if resolver.config.strategy.is_comparison:
         sdir = resolver.strategy_dir(config.strategy)
     else:
         sdir = resolver.output_base

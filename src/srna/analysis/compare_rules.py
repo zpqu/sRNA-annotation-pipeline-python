@@ -97,6 +97,10 @@ def table_s01b(d: pd.DataFrame) -> pd.DataFrame:
     )
 
 
+#: output-column name -> strategy key used by the read-movement tables.
+_TYPE_TO_STRATEGY = {"typeA": "any", "typeC": "union"}
+
+
 def _read_movement(
     base: Path,
     per_reads: dict[str, dict[str, pd.DataFrame]],
@@ -104,45 +108,43 @@ def _read_movement(
 ) -> pd.DataFrame:
     """Cross-tabulate read movement fully-contained -> *to_col* strategy.
 
-    The movement is keyed on read position (poskey) with the *to_col* strategy
-    table as the base (its counts are used); the fully-contained category is
-    carried along as ``typeB``. Reads present in only one strategy get the
-    missing category as ``other``.
+    Mirrors the R ``s01`` merge: the *any* table is the base (its counts are
+    used for both tables), the fully-contained category is carried along as
+    ``typeB`` and the target strategy's category as *to_col*. Reads present in
+    only one strategy get the missing category as ``other``.
     """
+    to_key = _TYPE_TO_STRATEGY[to_col]
     rows: list[pd.DataFrame] = []
     for _s, tables in per_reads.items():
+        any_t = tables["any"]
         fc = tables["fully-contained"]
-        to = tables[to_col]
-        fc["poskey"] = (
-            fc["chr"].astype(str)
-            + ":"
-            + fc["start"].astype(str)
-            + ":"
-            + fc["end"].astype(str)
-            + ":"
-            + fc["strand"].astype(str)
+        to = tables[to_key]
+        for t in (any_t, fc, to):
+            t["poskey"] = (
+                t["chr"].astype(str)
+                + ":"
+                + t["start"].astype(str)
+                + ":"
+                + t["end"].astype(str)
+                + ":"
+                + t["strand"].astype(str)
+            )
+        m = any_t[["poskey", "count", "category"]].merge(
+            fc[["poskey", "category"]].rename(columns={"category": "category_B"}),
+            on="poskey",
+            how="left",
         )
-        to["poskey"] = (
-            to["chr"].astype(str)
-            + ":"
-            + to["start"].astype(str)
-            + ":"
-            + to["end"].astype(str)
-            + ":"
-            + to["strand"].astype(str)
-        )
-        m = to[["poskey", "count", "category"]].merge(
-            fc[["poskey", "category"]], on="poskey", how="left", suffixes=("", "_B")
+        m = m.merge(
+            to[["poskey", "category"]].rename(columns={"category": "category_C"}),
+            on="poskey",
+            how="left",
         )
         m["typeB"] = m["category_B"].fillna("other")
-        rows.append(m[["typeB", "category", "count"]])
+        m[to_col] = m["category_C"].fillna("other")
+        rows.append(m[["typeB", to_col, "count"]])
     mov = pd.concat(rows, ignore_index=True)
-    agg = mov.groupby(["typeB", "category"], sort=False)["count"].sum().reset_index()
-    return (
-        agg.sort_values("count", ascending=False)
-        .rename(columns={"category": to_col})
-        .reset_index(drop=True)
-    )
+    agg = mov.groupby(["typeB", to_col], sort=False)["count"].sum().reset_index()
+    return agg.sort_values("count", ascending=False).reset_index(drop=True)
 
 
 def table_s01e(
@@ -290,7 +292,7 @@ def figure_s01b(base: Path, samples: list[str], figures_dir: Path) -> None:
         / size_all.groupby(["sample", "category", "strategy"], sort=False)["Freq"].transform("sum")
     )
     sizes = sorted(set(size_all["size"]))
-    cats = [c for c in _SIZE_CATEGORIES if c in set(size_all["category"])]
+    cats = [c for c in _SIZE_CATEGORIES if f"{c}.size" in set(size_all["category"])]
     ncol = len(samples)
     nrow = len(cats)
     w, h = fig_dims(4 * len(samples), len(samples), per_h=4.1)
