@@ -259,7 +259,7 @@ def annotate_sample(
         eid_all = np.concatenate(eids)
         nf_all = pd.concat(nfs, ignore_index=True)
         hits = df.iloc[ridx_all].copy()
-        hits["category"] = name
+        hits["category"] = FEATURE_META[name].out_label
         hits["feature_id"] = eid_all
         hits["n_features"] = nf_all.to_numpy()
         if name in GENE_CONTEXT_CATEGORIES:
@@ -277,7 +277,7 @@ def annotate_sample(
         )
 
     for name in GENOMIC_FEATURES:
-        category = "AS." + name
+        category = "AS." + FEATURE_META[name].out_label
         hit_ridx: list[np.ndarray] = []
         eids: list[np.ndarray] = []
         nfs: list[pd.Series] = []

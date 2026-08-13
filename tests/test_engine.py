@@ -110,7 +110,7 @@ def test_fully_contained_annotation():
     assert tab.loc[5, "gene_context"] == "intergenic"
     assert tab.loc[6, "category"] == "RM"
     assert tab.loc[6, "gene_context"] == "NA"
-    assert tab.loc[7, "category"] == "NM.exon"
+    assert tab.loc[7, "category"] == "refGene.NM.exon"
     assert tab.loc[7, "gene_context"] == "NA"
     assert tab.loc[7, "feature_id"] == "Xkr4"
     assert tab.loc[8, "category"] == "other"
@@ -135,7 +135,7 @@ def test_consolidated_counts_all_reads():
     assert counts[("matmiRNA.annotation", "AS.CDS")] == 5
     assert counts[("matmiRNA.annotation", "CDS")] == 3
     assert counts[("read.annotation", "matmiRNA")] == 8
-    assert counts[("read.annotation", "NM.exon")] == 8
+    assert counts[("read.annotation", "refGene.NM.exon")] == 8
     assert counts[("read.annotation", "other")] == 6
 
 
