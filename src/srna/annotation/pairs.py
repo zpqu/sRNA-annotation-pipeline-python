@@ -5,6 +5,10 @@ inconsistent strand semantics, so every mode is implemented as a strand-aware
 (or strand-ignoring) *any-overlap* join plus an explicit containment filter,
 which is exactly what the R pipeline's ``findOverlaps(type="within")`` computes.
 
+pyranges 0.1.4 is unstable on multi-chromosome joins with pandas 3 (it chokes
+when a chromosome is present in only one of the two inputs), so work is split
+per chromosome exactly like the step-02 engine does.
+
 All coordinates are 0-based half-open intervals. Both inputs must carry the
 ``read_idx`` / ``feat_idx`` identifier columns.
 """
@@ -39,6 +43,28 @@ def overlap_pairs(
         Array of pairs sorted by ``(read_idx, feat_idx)``.
 
     """
+    common_chroms = set(reads["chrom"].astype(str)) & set(features["chrom"].astype(str))
+    if not common_chroms:
+        return np.empty((0, 2), dtype=np.int64)
+    parts: list[np.ndarray] = []
+    for chrom in common_chroms:
+        sub = reads[reads["chrom"].astype(str) == chrom]
+        f = features[features["chrom"].astype(str) == chrom]
+        if sub.empty or f.empty:
+            continue
+        parts.append(_join_chrom(sub, f, mode, ignore_strand))
+    if not parts:
+        return np.empty((0, 2), dtype=np.int64)
+    return np.vstack(parts)
+
+
+def _join_chrom(
+    reads: pd.DataFrame,
+    features: pd.DataFrame,
+    mode: str,
+    ignore_strand: bool,
+) -> np.ndarray:
+    """Run the overlap join for a single chromosome."""
     keep_strand = not ignore_strand
     rpr = _to_pyranges(reads, _READ_COL, keep_strand)
     fpr = _to_pyranges(features, _FEAT_COL, keep_strand)

@@ -102,7 +102,7 @@ class PathResolver:
 
     def bam_file(self, sample: str) -> Path:
         """Locate the BAM file for a sample (tolerates ``.bwa``/``.bowtie2`` names)."""
-        candidates = sorted(self.bam_dir.glob(f"{sample}.bam"))
+        candidates = sorted(self.bam_dir.glob(f"{sample}*.bam"))
         if not candidates:
             raise FileNotFoundError(f"no BAM file for sample {sample!r} in {self.bam_dir}")
         return candidates[0]

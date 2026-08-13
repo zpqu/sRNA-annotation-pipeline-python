@@ -39,7 +39,7 @@ def collapse_bam(bam_path: Path, thread: int = 4) -> tuple[pd.DataFrame, int]:
             starts: list[int] = []
             ends: list[int] = []
             strands: list[int] = []
-            for read in bam.fetch(contig, thread=thread):
+            for read in bam.fetch(contig):
                 starts.append(read.reference_start)
                 ends.append(read.reference_end)
                 strands.append(1 if read.is_reverse else 0)

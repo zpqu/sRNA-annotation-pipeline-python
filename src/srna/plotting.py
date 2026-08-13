@@ -18,7 +18,7 @@ WIDTH_MM = 180.0
 HEIGHT_MM = 220.0
 
 #: orientation colour scheme used by step-04 figures.
-ORIENT_COLS = {"sense": "#1f78b4", "antisense": "#e31a1c", "other": "grey50"}
+ORIENT_COLS = {"sense": "#1f78b4", "antisense": "#e31a1c", "other": "grey"}
 
 #: per-category colour scheme used by step-03 / step-06 figures.
 CATEGORY_COLS = {
