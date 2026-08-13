@@ -1,0 +1,29 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+build/
+dist/
+
+# Caches
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+
+# Pipeline outputs
+output/
+logs/
+
+# Generated feature caches (large)
+data/cache/*
+
+# Raw input data (large binary files, not versioned)
+data/bam/
+data/DB/
+
+# Editor files
+*.un~
+.idea/
+.vscode/
