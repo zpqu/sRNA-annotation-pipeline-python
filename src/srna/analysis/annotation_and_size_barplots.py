@@ -210,7 +210,7 @@ def _figure_05_class(
     nrow = len(samples)
     w, h = fig_dims(len(samples) * 2, 2, per_h=4.1)
     for kind, _yval, title, ylabel in (
-        ("counts", "Freq", "counts", "Count"),
+        ("counts", "Freq", "counts", "Count (log10 scale)"),
         ("percentage", None, "percentage", "Percentage"),
     ):
         fig, axes = plt.subplots(nrow, 2, figsize=(w, h), squeeze=False)
@@ -222,8 +222,10 @@ def _figure_05_class(
                     denom = f["Freq"].sum()
                     y = f["Freq"].to_numpy() / denom if denom else np.zeros(len(f))
                 else:
-                    y = f["Freq"].to_numpy(dtype=float)
-                ax.bar(f["size"].to_numpy(), y, width=0.8)
+                    y = np.maximum(f["Freq"].to_numpy(dtype=float), 1.0)
+                ax.bar(f["size"].to_numpy(), y, width=0.8, log=kind == "counts")
+                if kind == "counts":
+                    ax.set_yscale("log")
                 ax.set_xticks(size_breaks)
                 if kind == "percentage":
                     ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
