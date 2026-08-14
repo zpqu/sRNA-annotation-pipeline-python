@@ -45,7 +45,7 @@ def _emit(bed: pd.DataFrame, feature_type: str, source: str) -> pd.DataFrame:
             "source": source,
             "score": pd.to_numeric(bed["score"], errors="coerce"),
         }
-    )[FEATURE_COLUMNS]
+    )[FEATURE_COLUMNS].reset_index(drop=True)
 
 
 def _empty(feature_type: str, source: str) -> pd.DataFrame:
