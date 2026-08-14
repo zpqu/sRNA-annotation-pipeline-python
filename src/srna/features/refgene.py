@@ -110,7 +110,7 @@ def _emit(df: pd.DataFrame, feature_type: str, source: str, genome: str) -> pd.D
             "source": source,
             "score": np.nan,
         }
-    )[FEATURE_COLUMNS]
+    )[FEATURE_COLUMNS].reset_index(drop=True)
 
 
 def _empty(feature_type: str, source: str, genome: str) -> pd.DataFrame:

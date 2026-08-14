@@ -51,7 +51,7 @@ def parse_mirna_gff3(path: Any) -> dict[str, pd.DataFrame]:
                 "source": "miRBase",
                 "score": np.nan,
             }
-        )[FEATURE_COLUMNS]
+        )[FEATURE_COLUMNS].reset_index(drop=True)
     return tables
 
 
