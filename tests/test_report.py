@@ -1,8 +1,8 @@
-"""Unit tests for step-10 report helpers (:mod:`srna.summary.report`)."""
+"""Unit tests for step-10 report helpers (:mod:`srna.summary.pipeline_report`)."""
 
 from __future__ import annotations
 
-from srna.summary.report import describe
+from srna.summary.pipeline_report import describe
 
 
 class TestDescribe:

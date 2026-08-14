@@ -66,7 +66,7 @@ def _active_strategies(
     return [config.strategy], lambda s: resolver.out_dir
 
 
-def run_step10(
+def run_pipeline_summary(
     resolver: PathResolver,
     samples: list[str],
     store: FeatureStore,
