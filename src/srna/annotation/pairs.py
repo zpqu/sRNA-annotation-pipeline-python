@@ -72,6 +72,11 @@ def _join_chrom(
     joined = joined[joined[_FEAT_COL] >= 0]
     if joined.empty:
         return np.empty((0, 2), dtype=np.int64)
+    if keep_strand:
+        # pyranges 0.1.4 join() ignores the Strand column even when both inputs
+        # are stranded (and `strandedness="same"` crashes), so enforce the
+        # same-strand condition ourselves (matches findOverlaps' default).
+        joined = joined[joined["Strand"] == joined["Strand_b"]]
     if mode == "within":
         contained = (joined["Start_b"] <= joined["Start"]) & (joined["End_b"] >= joined["End"])
         joined = joined[contained]

@@ -186,6 +186,17 @@ def test_pirna_max_score_selection():
     assert result.per_read.loc[0, "n_features"] == 2
 
 
+def test_sense_annotation_respects_strand():
+    # a read on the opposite strand of a feature must NOT be annotated as it
+    # (pyranges 0.1.4 join() ignores strand, so overlap_pairs enforces it).
+    read = pd.DataFrame(
+        [("chr1", 12, 18, "-", 1)],
+        columns=["chrom", "start", "end", "strand", "count"],
+    )
+    result = annotate_sample(read, _store(), Strategy.FULLY_CONTAINED, SAMPLE)
+    assert result.per_read.loc[0, "category"] != "matmiRNA"
+
+
 def test_empty_table_handling():
     empty = pd.DataFrame(columns=["chrom", "start", "end", "strand", "count"])
     result = annotate_sample(empty, _store(), Strategy.FULLY_CONTAINED, SAMPLE)
