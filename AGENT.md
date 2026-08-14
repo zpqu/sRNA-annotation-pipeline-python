@@ -67,8 +67,9 @@ Rules:
 - Feature-branch workflow: start each unit of work from `main` with
   `git switch -c <topic>` (e.g. `feat/step-07`, `fix/strand-overlap`),
   commit in small focused units, run tests before each commit, then merge
-  back with `git switch main && git merge --no-ff <topic>` and delete the
-  branch. There is no remote; merges are local only.
+  back with `git switch main && git merge --no-ff <topic>`. Keep the topic
+  branch after merging (do not delete it). There is no remote; merges are
+  local only.
 - Keep main clean and always-passing (tests green after every merge).
 - Commit frequently, in small focused units (each commit passes tests).
 - Run tests before committing.
