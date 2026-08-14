@@ -28,7 +28,7 @@ from srna.analysis.annotation_and_size_barplots import (
     _figure_04_class,
     _figure_05_class,
 )
-from srna.analysis.pirna_position_windows import _position_figure
+from srna.analysis.pirna_position_windows import _overlap_summary_figure, _position_figure
 
 SAMPLES = ["Cumulus-cells", "Granulosa-cells"]
 
@@ -134,6 +134,29 @@ class TestFigure05:
         }
         _assert_two_rows_and_full_axes(captured)
         assert _png_height(tmp_path / "Figure_05a.matmiRNA_size_barplot.png") == 2 * _ROW_PX
+
+
+class TestOverlapSummaryFigure:
+    def test_legend_does_not_overlap_title(self, tmp_path):
+        cats = list(pirna_position_windows._OVERLAP_LEVELS)
+        ov = pd.DataFrame(
+            [
+                {"sample": s, "category": c, "n_unique": 1, "n_reads": 2}
+                for s in SAMPLES
+                for c in cats
+            ]
+        )
+        captured = _captured_figs(_overlap_summary_figure, ov, SAMPLES, tmp_path)
+        assert set(captured) == {"Figure_06.piRNA_overlap_summary"}
+        fig = captured["Figure_06.piRNA_overlap_summary"]
+        fig.set_dpi(300)
+        fig.canvas.draw()
+        width, height = fig.get_size_inches() * fig.get_dpi()
+        bb = fig.legends[0].get_window_extent()
+        st = fig._suptitle.get_window_extent()
+        lt = fig.legends[0].get_title().get_window_extent()
+        assert bb.x0 >= 0 and bb.x1 <= width and bb.y0 >= 0 and bb.y1 <= height
+        assert min(st.y1, lt.y1) - max(st.y0, lt.y0) <= 0, "legend title overlaps suptitle"
 
 
 class TestPositionFigure:

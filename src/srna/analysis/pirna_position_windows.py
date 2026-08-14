@@ -306,8 +306,13 @@ def _overlap_summary_figure(
         small_fonts(ax)
     handles = [plt.Rectangle((0, 0), 1, 1, color=_OVERLAP_COLS[c]) for c in _OVERLAP_LEVELS]
     fig.legend(
-        handles, _OVERLAP_LEVELS, title="piRNA overlap", loc="upper center", ncol=5, fontsize=7
+        handles,
+        _OVERLAP_LEVELS,
+        title="piRNA overlap",
+        loc="center right",
+        bbox_to_anchor=(0.99, 0.5),
+        fontsize=7,
     )
     fig.suptitle("Percentage of piRNA reads overlapping snoRNA/tRNA genes", fontsize=10)
-    fig.tight_layout(rect=(0, 0, 1, 0.92))
+    fig.tight_layout(rect=(0, 0, 0.79, 0.97))
     save_figure(fig, figures_dir / "Figure_06.piRNA_overlap_summary")
