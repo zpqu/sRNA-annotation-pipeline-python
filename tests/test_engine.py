@@ -6,7 +6,7 @@ import pandas as pd
 
 from srna.annotation.engine import annotate_sample
 from srna.config import Strategy
-from srna.features.base import FEATURE_COLUMNS, make_frame
+from srna.features.schema import FEATURE_COLUMNS, make_frame
 
 SAMPLE = "test-sample"
 

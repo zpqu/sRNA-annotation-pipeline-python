@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .base import FEATURE_COLUMNS
+from .schema import FEATURE_COLUMNS
 
 
 def parse_trna_bed(path: Any, genome: str) -> pd.DataFrame:
@@ -15,7 +15,7 @@ def parse_trna_bed(path: Any, genome: str) -> pd.DataFrame:
 
     Interval coordinates from BED are 0-based half-open already.
     """
-    from .parsing import read_bed12
+    from .readers import read_bed12
 
     bed = read_bed12(path)
     return _emit(bed, "tRNA", f"{genome}_tRNAs")
@@ -23,7 +23,7 @@ def parse_trna_bed(path: Any, genome: str) -> pd.DataFrame:
 
 def parse_rm_bed(path: Any, genome: str) -> pd.DataFrame:
     """Parse a RepeatMasker BED6 file into a feature table."""
-    from .parsing import read_bed6
+    from .readers import read_bed6
 
     bed = read_bed6(path)
     return _emit(bed, "RM", f"{genome}_rmsk")

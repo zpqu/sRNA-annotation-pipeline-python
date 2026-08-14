@@ -18,7 +18,7 @@ import pandas as pd
 from loguru import logger
 
 from srna.config import Strategy
-from srna.features.store import FeatureStore
+from srna.features.feature_store import FeatureStore
 from srna.paths import PathResolver
 
 _EXPECTED_MATMIRNA = 2110

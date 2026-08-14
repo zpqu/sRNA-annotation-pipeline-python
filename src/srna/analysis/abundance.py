@@ -23,7 +23,7 @@ import pandas as pd
 from loguru import logger
 
 from srna.annotation.pairs import overlap_pairs
-from srna.features.store import FeatureStore
+from srna.features.feature_store import FeatureStore
 from srna.plotting import CATEGORY_COLS, fig_dims, save_figure
 
 _ABUNDANCE_CATEGORIES = ("matmiRNA", "snoRNA", "tRNA")

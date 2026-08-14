@@ -78,7 +78,7 @@ def _read_pirbase(path: Any, chr_style: str) -> pd.DataFrame:
 
 def _read_pirnadb(path: Any, chr_style: str) -> pd.DataFrame:
     """Read and normalize the piRNAdb GTF (non-comment lines only)."""
-    from .parsing import extract_gtf_fields, read_gtf
+    from .readers import extract_gtf_fields, read_gtf
 
     gtf = read_gtf(path)
     gtf = gtf[gtf["feature"] == "piRNA"]

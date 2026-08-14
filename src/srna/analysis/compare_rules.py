@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.features.store import FeatureStore
+from srna.features.feature_store import FeatureStore
 from srna.plotting import STRATEGY_COLS, fig_dims, save_figure, small_fonts
 
 STRATEGIES = ("fully-contained", "union", "any")

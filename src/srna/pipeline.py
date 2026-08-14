@@ -19,7 +19,7 @@ import pandas as pd
 from loguru import logger
 
 from srna.config import PipelineConfig, Strategy
-from srna.features.store import FeatureStore
+from srna.features.feature_store import FeatureStore
 from srna.paths import PathResolver
 from srna.reads.collapse import collapse_bam
 from srna.reads.figure01 import figure_01

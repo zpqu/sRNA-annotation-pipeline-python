@@ -7,7 +7,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .base import FEATURE_COLUMNS
+from .schema import FEATURE_COLUMNS
 
 
 def parse_mirna_gff3(path: Any) -> dict[str, pd.DataFrame]:
@@ -18,7 +18,7 @@ def parse_mirna_gff3(path: Any) -> dict[str, pd.DataFrame]:
         (``Name``, e.g. ``mmu-miR-206-5p``) and primary transcript.
 
     """
-    from .parsing import extract_gff_fields, read_gff3
+    from .readers import extract_gff_fields, read_gff3
 
     gff = read_gff3(path)
     fields = extract_gff_fields(gff, ["ID", "Name"])

@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from srna.features.parsing import (
+from srna.features.readers import (
     extract_gff_fields,
     extract_gtf_fields,
     read_bed6,
