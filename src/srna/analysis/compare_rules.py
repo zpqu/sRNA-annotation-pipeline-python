@@ -175,7 +175,7 @@ def table_s01e(
                     "count": g["count"].to_numpy(dtype=np.int64),
                 }
             )
-            from srna.annotation.pairs import overlap_pairs
+            from srna.annotation.overlap_pairs import overlap_pairs
 
             pairs = overlap_pairs(reads, f, "any")
             if len(pairs) == 0:

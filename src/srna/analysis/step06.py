@@ -17,7 +17,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.annotation.pairs import overlap_pairs
+from srna.annotation.overlap_pairs import overlap_pairs
 from srna.features.feature_store import FeatureStore
 from srna.plotting import fig_dims, save_figure, small_fonts
 

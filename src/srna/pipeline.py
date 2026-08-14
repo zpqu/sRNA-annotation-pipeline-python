@@ -111,7 +111,7 @@ def run_steps_02_06(
     from srna.analysis.abundance import run_step03
     from srna.analysis.figures_04_05 import run_step04, run_step05
     from srna.analysis.step06 import run_step06
-    from srna.annotation.engine import annotate_sample
+    from srna.annotation.annotator import annotate_sample
 
     if resolver.config.strategy.is_comparison:
         sdir = resolver.strategy_dir(config.strategy)

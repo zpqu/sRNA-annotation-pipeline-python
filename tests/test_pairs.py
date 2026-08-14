@@ -1,4 +1,4 @@
-"""Unit tests for :mod:`srna.annotation.pairs` (overlap-pair finding)."""
+"""Unit tests for :mod:`srna.annotation.overlap_pairs` (overlap-pair finding)."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import pytest
 
-from srna.annotation.pairs import overlap_pairs
+from srna.annotation.overlap_pairs import overlap_pairs
 
 
 def _reads():

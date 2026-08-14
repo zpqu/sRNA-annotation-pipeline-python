@@ -20,7 +20,7 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.annotation.pairs import overlap_pairs
+from srna.annotation.overlap_pairs import overlap_pairs
 from srna.config import Strategy
 from srna.features.feature_store import FeatureStore
 from srna.features.schema import (

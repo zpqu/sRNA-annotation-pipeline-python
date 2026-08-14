@@ -1,4 +1,4 @@
-"""Unit tests for raw annotation-file parsers (:mod:`srna.features.parsing`)."""
+"""Unit tests for raw annotation-file readers (:mod:`srna.features.readers`)."""
 
 from __future__ import annotations
 
