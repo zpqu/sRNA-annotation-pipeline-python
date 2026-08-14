@@ -212,13 +212,13 @@ def _describe_rules() -> list[tuple[str, str]]:
         (r"^Table_10_sanity_checks\.csv$", "Pipeline sanity-check results (step 10)"),
         (r"^Figure_01\.", "Read size / count distribution figure, faceted by sample (step 01)"),
         (
-            r"^Figure_03[abc]\.",
+            r"^Figure_03[abc]_",
             "Per-locus abundance distribution / rank-abundance / Lorenz curves (step 03)",
         ),
         (r"^Figure_04[a-e]\.", "Annotation count / percentage barplots (step 04)"),
         (r"^Figure_05[ab]\.", "Per-class read-size barplots, unique + all reads (step 05)"),
         (r"^Figure_06\.", "piRNA-vs-tRNA/snoRNA position profiles and overlap summary (step 06)"),
-        (r"^Figure_s01[ab]\.", "Overlap-rule comparison figures (step s01)"),
+        (r"^Figure_s01[ab]_", "Overlap-rule comparison figures (step s01)"),
     ]
 
 

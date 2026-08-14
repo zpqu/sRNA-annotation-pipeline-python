@@ -34,13 +34,17 @@ python3 -m venv .venv
 ## Usage
 
 ```bash
-.venv/bin/srna run [GENOME] [STRATEGY]
+.venv/bin/srna --root . --genome mm39 --strategy fully-contained
 ```
 
-- `GENOME`: assembly id, default `mm39` (raw files are read from
+- `--root`: project root containing `data/` and `output/` (default: current
+  directory).
+- `--genome`: assembly id, default `mm39` (raw files are read from
   `data/DB/`, caches are written to `data/cache/<GENOME>/`).
-- `STRATEGY`: sense-overlap rule, one of `fully-contained` (default),
+- `--strategy`: sense-overlap rule, one of `fully-contained` (default),
   `union`, `any`, or `comparison`.
+- `--chr-style`: chromosome naming convention, `chr` (default) or `none`.
+- `--force-rebuild-db`: rebuild the feature DB even when caches are valid.
 
 Outputs are written to `output/` (single strategy) or `output/comparison/`
 (comparison mode).

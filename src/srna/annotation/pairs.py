@@ -55,7 +55,10 @@ def overlap_pairs(
         parts.append(_join_chrom(sub, f, mode, ignore_strand))
     if not parts:
         return np.empty((0, 2), dtype=np.int64)
-    return np.vstack(parts)
+    pairs = np.vstack(parts)
+    # each per-chromosome join is internally sorted, so re-sort globally to
+    # honour the documented (read_idx, feat_idx) ordering.
+    return pairs[np.lexsort((pairs[:, 1], pairs[:, 0]))]
 
 
 def _join_chrom(
