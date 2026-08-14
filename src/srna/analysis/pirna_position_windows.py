@@ -178,7 +178,7 @@ def _window_profile(
     return pd.concat(out, ignore_index=True)
 
 
-def run_step06(
+def run_pirna_windows(
     per_reads: dict[str, pd.DataFrame],
     store: FeatureStore,
     samples: list[str],

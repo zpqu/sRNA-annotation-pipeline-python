@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import pandas as pd
 
-from srna.analysis.step06 import _overlap_table, _window_counts, sliding_windows
+from srna.analysis.pirna_position_windows import (
+    _overlap_table,
+    _window_counts,
+    sliding_windows,
+)
 
 
 def _windows() -> pd.DataFrame:

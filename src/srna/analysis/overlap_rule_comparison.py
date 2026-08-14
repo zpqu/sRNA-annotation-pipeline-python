@@ -76,12 +76,12 @@ def _composition(
     return d
 
 
-def table_s01a(d: pd.DataFrame) -> pd.DataFrame:
+def composition_table(d: pd.DataFrame) -> pd.DataFrame:
     """Ordered overlap-rule composition table."""
     return d.sort_values(["strategy", "pct_reads"], ascending=[True, False]).reset_index(drop=True)
 
 
-def table_s01b(d: pd.DataFrame) -> pd.DataFrame:
+def category_totals_table(d: pd.DataFrame) -> pd.DataFrame:
     """Per-category read totals (pct) with any/union deltas vs fully-contained."""
     cat = d.pivot_table(
         index=["sample", "item"],
@@ -147,7 +147,7 @@ def _read_movement(
     return agg.sort_values("count", ascending=False).reset_index(drop=True)
 
 
-def table_s01e(
+def mirna_expression_table(
     base: Path,
     store: FeatureStore,
     per_reads: dict[str, dict[str, pd.DataFrame]],
@@ -234,7 +234,7 @@ def _load_per_reads(base: Path, samples: list[str]) -> dict[str, dict[str, pd.Da
     return out
 
 
-def figure_s01a(d: pd.DataFrame, samples: list[str], figures_dir: Path) -> None:
+def composition_figure(d: pd.DataFrame, samples: list[str], figures_dir: Path) -> None:
     """Annotation-composition dodge barplot, faceted by sample."""
     import matplotlib.pyplot as plt
 
@@ -267,7 +267,7 @@ def figure_s01a(d: pd.DataFrame, samples: list[str], figures_dir: Path) -> None:
     save_figure(fig, figures_dir / "Figure_s01a_overlap_rules_composition")
 
 
-def figure_s01b(base: Path, samples: list[str], figures_dir: Path) -> None:
+def category_size_figure(base: Path, samples: list[str], figures_dir: Path) -> None:
     """Per-category read-size distributions, faceted by category x sample."""
     import matplotlib.pyplot as plt
 
@@ -321,7 +321,7 @@ def figure_s01b(base: Path, samples: list[str], figures_dir: Path) -> None:
     save_figure(fig, figures_dir / "Figure_s01b_overlap_rules_category_size")
 
 
-def run_s01(
+def run_overlap_rule_comparison(
     base: Path,
     store: FeatureStore,
     samples: list[str],
@@ -336,8 +336,10 @@ def run_s01(
             )
 
     d = _composition(base)
-    table_s01a(d).to_csv(tables_dir / "Table_s01a_overlap_rule_composition.csv", index=False)
-    table_s01b(d).to_csv(tables_dir / "Table_s01b_overlap_rule_category_totals.csv", index=False)
+    composition_table(d).to_csv(tables_dir / "Table_s01a_overlap_rule_composition.csv", index=False)
+    category_totals_table(d).to_csv(
+        tables_dir / "Table_s01b_overlap_rule_category_totals.csv", index=False
+    )
 
     per_reads = _load_per_reads(base, samples)
     mov_ba = _read_movement(base, per_reads, "typeA")
@@ -345,8 +347,8 @@ def run_s01(
     mov_bc = _read_movement(base, per_reads, "typeC")
     mov_bc.to_csv(tables_dir / "Table_s01d_read_movement_contained_vs_union.csv", index=False)
 
-    expr = table_s01e(base, store, per_reads)
+    expr = mirna_expression_table(base, store, per_reads)
     expr.to_csv(tables_dir / "Table_s01e_mature_miRNA_expression_strategies.csv", index=False)
 
-    figure_s01a(d, samples, figures_dir)
-    figure_s01b(base, samples, figures_dir)
+    composition_figure(d, samples, figures_dir)
+    category_size_figure(base, samples, figures_dir)

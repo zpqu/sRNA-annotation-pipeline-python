@@ -5,13 +5,13 @@ from __future__ import annotations
 import numpy as np
 import pandas as pd
 
-from srna.analysis.abundance import (
+from srna.analysis.locus_abundance import (
     _gini,
     _locus_reads,
     _spearman,
     _wilcoxon_paired,
-    table_03a,
-    table_03b,
+    abundance_summary_table,
+    per_locus_abundance_table,
 )
 
 
@@ -103,7 +103,7 @@ class TestLocusReads:
         }
 
 
-class TestTable03a:
+class TestAbundanceSummaryTable:
     def _locus_tab(self) -> pd.DataFrame:
         return pd.DataFrame(
             {
@@ -115,7 +115,7 @@ class TestTable03a:
         )
 
     def test_summary_values(self):
-        tab = table_03a(self._locus_tab(), ["A", "B"])
+        tab = abundance_summary_table(self._locus_tab(), ["A", "B"])
         assert len(tab) == 2
         row = tab[tab["sample"] == "A"].iloc[0]
         assert row["n_loci"] == 2
@@ -127,13 +127,13 @@ class TestTable03a:
         assert not pd.isna(row["wilcoxon_p_2sample"])
 
     def test_single_sample_no_cross_test(self):
-        tab = table_03a(self._locus_tab().query("sample == 'A'"), ["A"])
+        tab = abundance_summary_table(self._locus_tab().query("sample == 'A'"), ["A"])
         assert np.isnan(tab.iloc[0]["spearman_cross_sample"])
 
 
-class TestTable03b:
+class TestPerLocusAbundanceTable:
     def test_sorted_by_category_sample_reads(self):
-        tab = table_03b(
+        tab = per_locus_abundance_table(
             pd.DataFrame(
                 {
                     "sample": ["B", "A", "A"],

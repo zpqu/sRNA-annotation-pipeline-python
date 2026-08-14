@@ -108,9 +108,12 @@ def run_steps_02_06(
     step01: Step01Result,
 ) -> None:
     """Run steps 02-06 for one concrete strategy into its output directory."""
-    from srna.analysis.abundance import run_step03
-    from srna.analysis.figures_04_05 import run_step04, run_step05
-    from srna.analysis.step06 import run_step06
+    from srna.analysis.annotation_and_size_barplots import (
+        run_annotation_barplots,
+        run_read_size_barplots,
+    )
+    from srna.analysis.locus_abundance import run_abundance
+    from srna.analysis.pirna_position_windows import run_pirna_windows
     from srna.annotation.annotator import annotate_sample
 
     if resolver.config.strategy.is_comparison:
@@ -159,10 +162,10 @@ def run_steps_02_06(
             "step 02: sample '{}' annotated ({} unique reads)", sample, len(per_reads[sample])
         )
 
-    run_step03(per_reads, store, samples, sdir)
-    run_step04(sdir / "tables", sdir / "figures")
-    run_step05(sdir / "tables", sdir / "figures")
-    run_step06(per_reads, store, samples, sdir)
+    run_abundance(per_reads, store, samples, sdir)
+    run_annotation_barplots(sdir / "tables", sdir / "figures")
+    run_read_size_barplots(sdir / "tables", sdir / "figures")
+    run_pirna_windows(per_reads, store, samples, sdir)
 
 
 def run_pipeline(
@@ -188,9 +191,9 @@ def run_pipeline(
         for sub in (Strategy.FULLY_CONTAINED, Strategy.UNION, Strategy.ANY):
             logger.info("pipeline: running steps 02-06 for strategy '{}'", sub.value)
             run_steps_02_06(PipelineConfig.for_substrategy(config, sub), resolver, store, step01)
-        from srna.analysis.compare_rules import run_s01
+        from srna.analysis.overlap_rule_comparison import run_overlap_rule_comparison
 
-        run_s01(
+        run_overlap_rule_comparison(
             resolver.output_base,
             store,
             samples,
