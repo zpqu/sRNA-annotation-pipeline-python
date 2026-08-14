@@ -17,8 +17,8 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.annotation.pairs import overlap_pairs
-from srna.features.store import FeatureStore
+from srna.annotation.overlap_pairs import overlap_pairs
+from srna.features.feature_store import FeatureStore
 from srna.plotting import fig_dims, save_figure, small_fonts
 
 _OVERLAP_LEVELS = [
@@ -178,7 +178,7 @@ def _window_profile(
     return pd.concat(out, ignore_index=True)
 
 
-def run_step06(
+def run_pirna_windows(
     per_reads: dict[str, pd.DataFrame],
     store: FeatureStore,
     samples: list[str],

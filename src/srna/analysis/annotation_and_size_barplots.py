@@ -243,7 +243,7 @@ def _figure_05_class(
         save_figure(fig, base)
 
 
-def run_step04(
+def run_annotation_barplots(
     tables_dir: Path,
     figures_dir: Path,
 ) -> None:
@@ -259,7 +259,7 @@ def run_step04(
         _figure_04_class(class_name, sub, levels, list(sub["sample"].unique()), figures_dir)
 
 
-def run_step05(
+def run_read_size_barplots(
     tables_dir: Path,
     figures_dir: Path,
 ) -> None:

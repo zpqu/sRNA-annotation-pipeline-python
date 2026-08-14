@@ -22,8 +22,8 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.annotation.pairs import overlap_pairs
-from srna.features.store import FeatureStore
+from srna.annotation.overlap_pairs import overlap_pairs
+from srna.features.feature_store import FeatureStore
 from srna.plotting import CATEGORY_COLS, fig_dims, save_figure
 
 _ABUNDANCE_CATEGORIES = ("matmiRNA", "snoRNA", "tRNA")
@@ -139,7 +139,7 @@ def _wilcoxon_paired(a: pd.Series, b: pd.Series) -> float:
     return float(p)
 
 
-def table_03a(
+def abundance_summary_table(
     locus_tab: pd.DataFrame,
     samples: list[str],
 ) -> pd.DataFrame:
@@ -194,14 +194,14 @@ def _format_p(p: float) -> str:
     return f"{p:.3g}"
 
 
-def table_03b(locus_tab: pd.DataFrame) -> pd.DataFrame:
+def per_locus_abundance_table(locus_tab: pd.DataFrame) -> pd.DataFrame:
     """Long-format per-locus abundance, ordered by category/sample/reads."""
     return locus_tab.sort_values(
         ["category", "sample", "n_reads"], ascending=[True, True, False], kind="stable"
     ).reset_index(drop=True)
 
 
-def figure_03a(
+def locus_distribution_figure(
     locus_tab: pd.DataFrame,
     samples: list[str],
     figures_dir: Path,
@@ -251,7 +251,7 @@ def figure_03a(
     plt.close(fig)
 
 
-def figure_03b(
+def rank_abundance_figure(
     locus_tab: pd.DataFrame,
     samples: list[str],
     figures_dir: Path,
@@ -299,7 +299,7 @@ def figure_03b(
     plt.close(fig)
 
 
-def figure_03c(
+def lorenz_figure(
     locus_tab: pd.DataFrame,
     samples: list[str],
     figures_dir: Path,
@@ -336,7 +336,7 @@ def figure_03c(
     plt.close(fig)
 
 
-def run_step03(
+def run_abundance(
     per_reads: dict[str, pd.DataFrame],
     store: FeatureStore,
     samples: list[str],
@@ -353,10 +353,12 @@ def run_step03(
     )
     logger.info("step 03: {} per-locus abundance rows", len(locus_tab))
 
-    t3a = table_03a(locus_tab, samples)
+    t3a = abundance_summary_table(locus_tab, samples)
     t3a.to_csv(tables_dir / "Table_03a_category_abundance_summary.csv", index=False)
-    table_03b(locus_tab).to_csv(tables_dir / "Table_03b_per_locus_abundance.csv", index=False)
+    per_locus_abundance_table(locus_tab).to_csv(
+        tables_dir / "Table_03b_per_locus_abundance.csv", index=False
+    )
 
-    figure_03a(locus_tab, samples, figures_dir)
-    figure_03b(locus_tab, samples, figures_dir)
-    figure_03c(locus_tab, samples, figures_dir)
+    locus_distribution_figure(locus_tab, samples, figures_dir)
+    rank_abundance_figure(locus_tab, samples, figures_dir)
+    lorenz_figure(locus_tab, samples, figures_dir)

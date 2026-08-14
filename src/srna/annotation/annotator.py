@@ -20,9 +20,10 @@ import numpy as np
 import pandas as pd
 from loguru import logger
 
-from srna.annotation.pairs import overlap_pairs
+from srna.annotation.overlap_pairs import overlap_pairs
 from srna.config import Strategy
-from srna.features.base import (
+from srna.features.feature_store import FeatureStore
+from srna.features.schema import (
     FEATURE_META,
     GENE_CONTEXT_CATEGORIES,
     GENE_FEATURES,
@@ -30,7 +31,6 @@ from srna.features.base import (
     GENOMIC_FEATURES,
     element_id_of,
 )
-from srna.features.store import FeatureStore
 
 _SENSE_MODE: dict[Strategy, str] = {
     Strategy.FULLY_CONTAINED: "within",

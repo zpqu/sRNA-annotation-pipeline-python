@@ -15,7 +15,7 @@ from srna.reads.summaries import build_table_01b, subsample_counts
 _ROW_H_MM = 69.0
 
 
-def figure_01(samples: dict[str, pd.DataFrame], base: Path) -> Path:
+def read_size_overview_figure(samples: dict[str, pd.DataFrame], base: Path) -> Path:
     """Render the read-size x read-count overview for all samples.
 
     Args:

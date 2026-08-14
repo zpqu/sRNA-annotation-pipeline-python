@@ -8,7 +8,7 @@ Port of the ``refGene GTF`` section of ``00_build_annotation_DB.R``:
   ``lincRNA.exon``.
 
 All returned tables use 0-based half-open intervals with the unified feature
-schema (see :mod:`srna.features.base`).
+schema (see :mod:`srna.features.schema`).
 """
 
 from __future__ import annotations
@@ -19,7 +19,7 @@ from typing import Any
 import numpy as np
 import pandas as pd
 
-from .base import FEATURE_COLUMNS
+from .schema import FEATURE_COLUMNS
 
 _SNORD_RE = re.compile(r"^Snor", re.IGNORECASE)
 
@@ -35,7 +35,7 @@ def parse_refgene_gtf(path: Any, genome: str) -> dict[str, pd.DataFrame]:
         A mapping of canonical feature type -> feature DataFrame.
 
     """
-    from .parsing import extract_gtf_fields, read_gtf
+    from .readers import extract_gtf_fields, read_gtf
 
     gtf = read_gtf(path)
     fields = extract_gtf_fields(gtf, ["gene_id", "transcript_id", "gene_name"])

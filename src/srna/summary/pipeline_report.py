@@ -18,7 +18,7 @@ import pandas as pd
 from loguru import logger
 
 from srna.config import Strategy
-from srna.features.store import FeatureStore
+from srna.features.feature_store import FeatureStore
 from srna.paths import PathResolver
 
 _EXPECTED_MATMIRNA = 2110
@@ -66,7 +66,7 @@ def _active_strategies(
     return [config.strategy], lambda s: resolver.out_dir
 
 
-def run_step10(
+def run_pipeline_summary(
     resolver: PathResolver,
     samples: list[str],
     store: FeatureStore,

@@ -19,10 +19,10 @@ from loguru import logger
 
 from ..chrom import filter_primary, normalize_seqnames
 from ..config import PipelineConfig
-from .base import CANONICAL_TYPES
 from .mirna import parse_mirna_gff3
 from .pirna import parse_pirna
 from .refgene import parse_refgene_gtf
+from .schema import CANONICAL_TYPES
 from .trna_rm import parse_rm_bed, parse_trna_bed
 
 _CACHE_VERSION = 1

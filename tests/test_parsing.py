@@ -1,10 +1,10 @@
-"""Unit tests for raw annotation-file parsers (:mod:`srna.features.parsing`)."""
+"""Unit tests for raw annotation-file readers (:mod:`srna.features.readers`)."""
 
 from __future__ import annotations
 
 import pandas as pd
 
-from srna.features.parsing import (
+from srna.features.readers import (
     extract_gff_fields,
     extract_gtf_fields,
     read_bed6,
