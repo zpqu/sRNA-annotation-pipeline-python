@@ -15,6 +15,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from loguru import logger
+from matplotlib.ticker import PercentFormatter
 
 from srna.plotting import ORIENT_COLS, fig_dims, save_figure, small_fonts
 
@@ -224,6 +225,8 @@ def _figure_05_class(
                     y = f["Freq"].to_numpy(dtype=float)
                 ax.bar(f["size"].to_numpy(), y, width=0.8)
                 ax.set_xticks(size_breaks)
+                if kind == "percentage":
+                    ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
                 ax.set_ylabel(ylabel, fontsize=8)
         fig.suptitle(f"{class_name} read-size distribution ({title})", fontsize=10)
