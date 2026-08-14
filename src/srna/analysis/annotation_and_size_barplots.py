@@ -15,7 +15,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from loguru import logger
-from matplotlib.ticker import PercentFormatter
+from matplotlib.ticker import PercentFormatter, StrMethodFormatter
 
 from srna.plotting import ORIENT_COLS, fig_dims, save_figure, small_fonts
 
@@ -137,10 +137,10 @@ def _figure_04_class(
             values = np.array([counts.get(lv, 0) for lv in items], dtype=float)
             groups = [_orientation(lv) for lv in items]
             if len(items):
-                _axis_bar(ax, items, np.maximum(values, 1.0), groups, log_scale=True)
-            ax.set_yscale("log")
+                _axis_bar(ax, items, values, groups, log_scale=False)
+            ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
             ax.set_title(f"{s} | {flavor}", fontsize=8)
-            ax.set_ylabel("Count (log10 scale)", fontsize=8)
+            ax.set_ylabel("Count", fontsize=8)
     fig.suptitle(f"{class_name} annotation - count", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     save_figure(
@@ -210,7 +210,7 @@ def _figure_05_class(
     nrow = len(samples)
     w, h = fig_dims(len(samples) * 2, 2, per_h=4.1)
     for kind, _yval, title, ylabel in (
-        ("counts", "Freq", "counts", "Count (log10 scale)"),
+        ("counts", "Freq", "counts", "Count"),
         ("percentage", None, "percentage", "Percentage"),
     ):
         fig, axes = plt.subplots(nrow, 2, figsize=(w, h), squeeze=False)
@@ -222,12 +222,12 @@ def _figure_05_class(
                     denom = f["Freq"].sum()
                     y = f["Freq"].to_numpy() / denom if denom else np.zeros(len(f))
                 else:
-                    y = np.maximum(f["Freq"].to_numpy(dtype=float), 1.0)
-                ax.bar(f["size"].to_numpy(), y, width=0.8, log=kind == "counts")
-                if kind == "counts":
-                    ax.set_yscale("log")
+                    y = f["Freq"].to_numpy(dtype=float)
+                ax.bar(f["size"].to_numpy(), y, width=0.8)
                 ax.set_xticks(size_breaks)
-                if kind == "percentage":
+                if kind == "counts":
+                    ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
+                elif kind == "percentage":
                     ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
                 ax.set_ylabel(ylabel, fontsize=8)
