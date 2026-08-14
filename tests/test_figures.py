@@ -120,6 +120,25 @@ class TestFigure04:
             _png_height(tmp_path / "Figure_04b.matmiRNA_annotation_count_barplot.png")
             == 2 * _ROW_PX
         )
+        assert all(
+            ax.get_yscale() == "linear"
+            for ax in captured["Figure_04b.matmiRNA_annotation_count_barplot"].axes
+        )
+        assert all(
+            ax.get_yscale() == "linear"
+            for ax in captured["Figure_04b.matmiRNA_annotation_percentage_barplot"].axes
+        )
+
+    def test_count_y_ticks_use_thousands_separator(self, tmp_path):
+        sub = _t2_block(READ_LEVELS[:3])
+        sub["Freq"] *= 100_000
+        captured = _captured_figs(
+            _figure_04_class, "matmiRNA", sub, READ_LEVELS[:3], SAMPLES, tmp_path
+        )
+        fig = captured["Figure_04b.matmiRNA_annotation_count_barplot"]
+        fig.canvas.draw()
+        labels = [t.get_text() for ax in fig.axes for t in ax.get_yticklabels() if t.get_text()]
+        assert any("," in lab for lab in labels), labels
 
 
 class TestFigure05:
@@ -134,13 +153,24 @@ class TestFigure05:
         }
         _assert_two_rows_and_full_axes(captured)
         assert all(
-            ax.get_yscale() == "log" for ax in captured["Figure_05a.matmiRNA_size_barplot"].axes
+            ax.get_yscale() == "linear" for ax in captured["Figure_05a.matmiRNA_size_barplot"].axes
         )
         assert all(
             ax.get_yscale() == "linear"
             for ax in captured["Figure_05b.matmiRNA_size_barplot.percentage"].axes
         )
         assert _png_height(tmp_path / "Figure_05a.matmiRNA_size_barplot.png") == 2 * _ROW_PX
+
+    def test_count_y_ticks_use_thousands_separator(self, tmp_path):
+        sub = _t2_block([str(sz) for sz in range(16, 26)])
+        sub["item"] = sub["item"].astype(int)
+        sub["Freq"] *= 1_000_000
+        breaks = np.asarray([16, 21, 26])
+        captured = _captured_figs(_figure_05_class, "matmiRNA", sub, SAMPLES, tmp_path, breaks)
+        fig = captured["Figure_05a.matmiRNA_size_barplot"]
+        fig.canvas.draw()
+        labels = [t.get_text() for ax in fig.axes for t in ax.get_yticklabels() if t.get_text()]
+        assert any("," in lab for lab in labels), labels
 
 
 class TestOverlapSummaryFigure:
