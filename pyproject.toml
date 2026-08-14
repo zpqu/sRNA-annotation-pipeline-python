@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "srna-annotation"
 version = "0.1.0"
-description = "Production-quality small-RNA annotation pipeline (refactored from R)."
+description = "End-to-end small-RNA sequencing annotation pipeline (Python)."
 readme = "README.md"
 requires-python = ">=3.12"
 license = { text = "MIT" }
