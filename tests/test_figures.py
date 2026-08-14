@@ -103,14 +103,19 @@ def _t2_block(items: list[str]) -> pd.DataFrame:
 class TestFigure04:
     def test_two_sample_grid_renders_both_rows(self, tmp_path):
         sub = _t2_block(READ_LEVELS[:6])
-        captured = _captured_figs(
-            _figure_04_class, "matmiRNA", sub, READ_LEVELS[:6], SAMPLES, tmp_path
-        )
+        captured = _captured_figs(_figure_04_class, "matmiRNA", sub, READ_LEVELS, SAMPLES, tmp_path)
         assert set(captured) == {
             "Figure_04b.matmiRNA_annotation_count_barplot",
             "Figure_04b.matmiRNA_annotation_percentage_barplot",
         }
         _assert_two_rows_and_full_axes(captured)
+        for name, fig in captured.items():
+            for ax in fig.axes:
+                labels = {t.get_text() for t in ax.get_xticklabels() if t.get_text() != ""}
+                assert labels == set(READ_LEVELS), (
+                    f"{name}: {ax.get_title()}: x axis must show every category "
+                    f"including zero-count ones (missing {set(READ_LEVELS) - labels})"
+                )
         assert (
             _png_height(tmp_path / "Figure_04b.matmiRNA_annotation_count_barplot.png")
             == 2 * _ROW_PX

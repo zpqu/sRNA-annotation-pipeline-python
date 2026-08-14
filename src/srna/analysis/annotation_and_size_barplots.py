@@ -121,7 +121,6 @@ def _figure_04_class(
     """Draw count + percentage barplots for one step-04 class."""
     import matplotlib.pyplot as plt
 
-    levels = [lv for lv in levels if lv in set(sub["item"])]
     samples = list(sub["sample"].unique())
     ncol = 2
     nrow = len(samples)
@@ -133,11 +132,11 @@ def _figure_04_class(
             ax = axes[i][j]
             f = row_sub[row_sub["flavor"] == flavor]
             counts = {str(it): val for it, val in zip(f["item"], f["Freq"], strict=False)}
-            items = [lv for lv in levels if counts.get(lv, 0) > 0]
+            items = list(levels)
             values = np.array([counts.get(lv, 0) for lv in items], dtype=float)
             groups = [_orientation(lv) for lv in items]
             if len(items):
-                _axis_bar(ax, items, values, groups, log_scale=True)
+                _axis_bar(ax, items, np.maximum(values, 1.0), groups, log_scale=True)
             ax.set_yscale("log")
             ax.set_title(f"{s} | {flavor}", fontsize=8)
             ax.set_ylabel("Count (log10 scale)", fontsize=8)
@@ -174,7 +173,7 @@ def _figure_04_class(
             ax = axes[i][j]
             f = full[(full["sample"] == s) & (full["flavor"] == flavor)]
             counts = dict(zip(f["item"], f["per"], strict=False))
-            items = [lv for lv in levels if counts.get(lv, 0) > 0]
+            items = list(levels)
             values = np.array([counts.get(lv, 0) for lv in items])
             groups = [_orientation(lv) for lv in items]
             if len(items):
