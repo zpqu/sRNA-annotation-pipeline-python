@@ -133,6 +133,13 @@ class TestFigure05:
             "Figure_05b.matmiRNA_size_barplot.percentage",
         }
         _assert_two_rows_and_full_axes(captured)
+        assert all(
+            ax.get_yscale() == "log" for ax in captured["Figure_05a.matmiRNA_size_barplot"].axes
+        )
+        assert all(
+            ax.get_yscale() == "linear"
+            for ax in captured["Figure_05b.matmiRNA_size_barplot.percentage"].axes
+        )
         assert _png_height(tmp_path / "Figure_05a.matmiRNA_size_barplot.png") == 2 * _ROW_PX
 
 
