@@ -125,7 +125,7 @@ def _figure_04_class(
     samples = list(sub["sample"].unique())
     ncol = 2
     nrow = len(samples)
-    w, h = fig_dims(len(samples), ncol, per_h=4.1)
+    w, h = fig_dims(len(samples) * ncol, ncol, per_h=4.1)
     fig, axes = plt.subplots(nrow, ncol, figsize=(w, h), squeeze=False)
     for i, s in enumerate(samples):
         row_sub = sub[sub["sample"] == s]
@@ -141,8 +141,6 @@ def _figure_04_class(
             ax.set_yscale("log")
             ax.set_title(f"{s} | {flavor}", fontsize=8)
             ax.set_ylabel("Count (log10 scale)", fontsize=8)
-    for j in range(len(samples), nrow * ncol):
-        axes[j // ncol][j % ncol].axis("off")
     fig.suptitle(f"{class_name} annotation - count", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     save_figure(
@@ -185,8 +183,6 @@ def _figure_04_class(
             ax.set_yticklabels([f"{tick:.0%}" for tick in ax.get_yticks()])
             ax.set_title(f"{s} | {flavor}", fontsize=8)
             ax.set_ylabel("Percentage", fontsize=8)
-    for j in range(len(samples), nrow * ncol):
-        axes[j // ncol][j % ncol].axis("off")
     fig.suptitle(f"{class_name} annotation - percentage", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     save_figure(
@@ -212,7 +208,7 @@ def _figure_05_class(
     sub = sub.copy()
     sub["size"] = sub["item"].astype(int)
     nrow = len(samples)
-    w, h = fig_dims(len(samples), 2, per_h=4.1)
+    w, h = fig_dims(len(samples) * 2, 2, per_h=4.1)
     for kind, _yval, title, ylabel in (
         ("counts", "Freq", "counts", "Count"),
         ("percentage", None, "percentage", "Percentage"),
@@ -231,8 +227,6 @@ def _figure_05_class(
                 ax.set_xticks(size_breaks)
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
                 ax.set_ylabel(ylabel, fontsize=8)
-        for j in range(len(samples), nrow * 2):
-            axes[j // 2][j % 2].axis("off")
         fig.suptitle(f"{class_name} read-size distribution ({title})", fontsize=10)
         fig.tight_layout(rect=(0, 0, 1, 0.97))
         base = (

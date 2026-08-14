@@ -248,7 +248,7 @@ def _position_figure(
             profile.groupby(["position", "sample", "flavor"], sort=False)[col].mean().reset_index()
         )
         nrow = len(samples)
-        w, h = fig_dims(len(samples), 2, per_h=4.1)
+        w, h = fig_dims(len(samples) * 2, 2, per_h=4.1)
         fig, axes = plt.subplots(nrow, 2, figsize=(w, h), squeeze=False)
         for i, s in enumerate(samples):
             for j, flavor in enumerate(["unique reads", "all reads"]):
@@ -258,8 +258,6 @@ def _position_figure(
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
                 ax.set_ylabel("Mean count", fontsize=8)
                 small_fonts(ax)
-        for j in range(len(samples), nrow * 2):
-            axes[j // 2][j % 2].axis("off")
         orient = "sense" if col == "sense" else "antisense"
         fig.suptitle(
             f"{gene_name} - piRNA reads, {orient} position distribution (20 bp windows)",
