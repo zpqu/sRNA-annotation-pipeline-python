@@ -85,7 +85,7 @@ def parse_refgene_gtf(path: Any, genome: str) -> dict[str, pd.DataFrame]:
     # --- NR_ (noncoding): snoRNAs + other ncRNA -------------------------------
     nr = gtf[is_nr]
     nr_exon = nr[nr["feature"] == "exon"]
-    nr_snord = nr_exon["gene_name"].str.match(_SNORD_RE.pattern)
+    nr_snord = nr_exon["gene_name"].str.match(_SNORD_RE)
     tables["NR.exon"] = _emit(nr_exon, "NR.exon", "refGene", genome)
     tables["snoRNA"] = _emit(nr_exon[nr_snord], "snoRNA", "refGene", genome)
     tables["lincRNA.exon"] = _emit(nr_exon[~nr_snord], "lincRNA.exon", "refGene", genome)
