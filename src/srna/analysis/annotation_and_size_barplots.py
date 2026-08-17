@@ -180,7 +180,7 @@ def _figure_04_class(
             if len(items):
                 _axis_bar(ax, items, values, groups, log_scale=False)
             ax.set_ylim(0, 1)
-            ax.set_yticklabels([f"{tick:.0%}" for tick in ax.get_yticks()])
+            ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
             ax.set_title(f"{s} | {flavor}", fontsize=8)
             ax.set_ylabel("Percentage", fontsize=8)
     fig.suptitle(f"{class_name} annotation - percentage", fontsize=10)
