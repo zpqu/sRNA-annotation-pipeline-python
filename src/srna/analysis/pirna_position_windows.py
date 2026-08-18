@@ -260,6 +260,8 @@ def _position_figure(
                 is_left = j == 0
                 if not is_bottom:
                     ax.tick_params(axis="x", labelbottom=False)
+                if is_bottom:
+                    ax.set_xlabel("position", fontsize=8)
                 if is_left:
                     ax.set_ylabel("Mean count", fontsize=8)
                 small_fonts(ax)

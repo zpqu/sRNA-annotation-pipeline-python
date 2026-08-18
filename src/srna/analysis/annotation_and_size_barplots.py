@@ -239,6 +239,8 @@ def _figure_05_class(
                 is_left = j == 0
                 if not is_bottom:
                     ax.tick_params(axis="x", labelbottom=False)
+                if is_bottom:
+                    ax.set_xlabel("size (nt)", fontsize=8)
                 if kind == "counts":
                     ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
                 elif kind == "percentage":
