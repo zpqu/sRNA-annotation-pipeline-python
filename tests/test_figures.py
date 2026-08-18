@@ -56,21 +56,30 @@ def _captured_figs(func, *args, **kwargs) -> dict[str, plt.Figure]:
 
 
 def _assert_two_rows_and_full_axes(captured: dict[str, plt.Figure]) -> None:
+    n_samples = len(SAMPLES)
+    ncol = 2
     for name, fig in captured.items():
         fig.set_dpi(300)
         fig.canvas.draw()
         width, height = fig.get_size_inches() * fig.get_dpi()
-        assert len(fig.axes) == 2 * len(SAMPLES), f"{name}: panel count"
-        for ax in fig.axes:
+        assert len(fig.axes) == ncol * n_samples, f"{name}: panel count"
+        for idx, ax in enumerate(fig.axes):
+            row = idx // ncol
+            is_bottom = row == n_samples - 1
             xt = [t for t in ax.get_xticklabels() if t.get_text() != ""]
             yt = [t for t in ax.get_yticklabels() if t.get_text() != ""]
-            assert len(xt) >= 1, f"{name}: {ax.get_title()}: no x tick labels"
+            if is_bottom:
+                assert len(xt) >= 1, f"{name}: {ax.get_title()}: no x tick labels"
+                assert all(t.get_visible() for t in xt), f"{name}: hidden x labels"
+                for t in xt:
+                    bb = t.get_window_extent()
+                    assert bb.y0 >= 0, f"{name}: x label clipped below canvas"
+            else:
+                assert all(not t.get_visible() for t in xt), (
+                    f"{name}: {ax.get_title()}: non-bottom row should have hidden x labels"
+                )
             assert len(yt) >= 1, f"{name}: {ax.get_title()}: no y tick labels"
-            assert all(t.get_visible() for t in xt), f"{name}: hidden x labels"
             assert all(t.get_visible() for t in yt), f"{name}: hidden y labels"
-            for t in xt:
-                bb = t.get_window_extent()
-                assert bb.y0 >= 0, f"{name}: x label clipped below canvas"
             for t in yt:
                 bb = t.get_window_extent()
                 assert bb.x0 >= 0, f"{name}: y label clipped left of canvas"
@@ -109,13 +118,17 @@ class TestFigure04:
             "Figure_04b.matmiRNA_annotation_percentage_barplot",
         }
         _assert_two_rows_and_full_axes(captured)
+        ncol = 2
         for name, fig in captured.items():
-            for ax in fig.axes:
-                labels = {t.get_text() for t in ax.get_xticklabels() if t.get_text() != ""}
-                assert labels == set(READ_LEVELS), (
-                    f"{name}: {ax.get_title()}: x axis must show every category "
-                    f"including zero-count ones (missing {set(READ_LEVELS) - labels})"
-                )
+            for idx, ax in enumerate(fig.axes):
+                row = idx // ncol
+                is_bottom = row == len(SAMPLES) - 1
+                if is_bottom:
+                    labels = {t.get_text() for t in ax.get_xticklabels() if t.get_text() != ""}
+                    assert labels == set(READ_LEVELS), (
+                        f"{name}: {ax.get_title()}: x axis must show every category "
+                        f"including zero-count ones (missing {set(READ_LEVELS) - labels})"
+                    )
         assert (
             _png_height(tmp_path / "Figure_04b.matmiRNA_annotation_count_barplot.png")
             == 2 * _ROW_PX
