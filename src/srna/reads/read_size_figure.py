@@ -49,9 +49,6 @@ def read_size_overview_figure(samples: dict[str, pd.DataFrame], base: Path) -> P
             small_fonts(ax)
             if not is_bottom:
                 ax.tick_params(axis="x", labelbottom=False)
-            if not is_left:
-                ax.set_ylabel("")
-                ax.tick_params(axis="y", labelleft=False)
 
     fig.tight_layout()
     save_figure(fig, base)

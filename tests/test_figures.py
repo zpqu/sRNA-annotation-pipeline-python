@@ -267,7 +267,6 @@ class TestFigure01:
             row = idx // ncol
             col = idx % ncol
             is_bottom = row == n_samples - 1
-            is_left = col == 0
             xt = [t for t in ax.get_xticklabels() if t.get_text() != ""]
             if is_bottom:
                 assert len(xt) >= 1, f"row {row}, col {col}: no x tick labels"
@@ -276,11 +275,9 @@ class TestFigure01:
                 assert all(not t.get_visible() for t in xt), (
                     f"row {row}, col {col}: non-bottom row should have hidden x labels"
                 )
-            if not is_left:
-                yt = [t for t in ax.get_yticklabels() if t.get_text() != ""]
-                assert all(not t.get_visible() for t in yt), (
-                    f"row {row}, col {col}: non-left column should have hidden y labels"
-                )
+            yt = [t for t in ax.get_yticklabels() if t.get_text() != ""]
+            assert len(yt) >= 1, f"row {row}, col {col}: no y tick labels"
+            assert all(t.get_visible() for t in yt), f"row {row}, col {col}: hidden y labels"
 
 
 class TestFigure03:

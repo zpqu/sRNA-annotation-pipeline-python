@@ -251,8 +251,6 @@ def locus_distribution_figure(
             ax.tick_params(axis="x", labelbottom=False)
         if is_left:
             ax.set_ylabel(r"$\log_{10}(reads+1)$", fontsize=9)
-        else:
-            ax.tick_params(axis="y", labelleft=False)
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")
     fig.suptitle("per-locus read abundance by annotation category", fontsize=10)
@@ -309,8 +307,6 @@ def rank_abundance_figure(
             ax.tick_params(axis="x", labelbottom=False)
         if is_left:
             ax.set_ylabel("reads (log10)", fontsize=8)
-        else:
-            ax.tick_params(axis="y", labelleft=False)
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")
     fig.suptitle("rank-abundance curves per annotation category", fontsize=10)
@@ -355,8 +351,6 @@ def lorenz_figure(
             ax.tick_params(axis="x", labelbottom=False)
         if is_left:
             ax.set_ylabel("cumulative fraction of reads", fontsize=8)
-        else:
-            ax.tick_params(axis="y", labelleft=False)
         ax.set_aspect("equal")
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")
