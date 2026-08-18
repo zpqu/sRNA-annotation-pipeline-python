@@ -94,6 +94,7 @@ def _axis_bar(
     values: np.ndarray,
     groups: list[str],
     log_scale: bool,
+    show_xticklabels: bool = True,
 ) -> None:
     """Draw a grouped-by-orientation bar chart on *ax*."""
     width = 0.7
@@ -108,7 +109,10 @@ def _axis_bar(
         )
         pos += 1.0
     ax.set_xticks(np.arange(len(items)))
-    ax.set_xticklabels(items, rotation=45, ha="right")
+    if show_xticklabels:
+        ax.set_xticklabels(items, rotation=45, ha="right")
+    else:
+        ax.tick_params(axis="x", labelbottom=False)
     small_fonts(ax)
 
 
@@ -136,11 +140,14 @@ def _figure_04_class(
             items = list(levels)
             values = np.array([counts.get(lv, 0) for lv in items], dtype=float)
             groups = [_orientation(lv) for lv in items]
+            is_bottom = i == nrow - 1
+            is_left = j == 0
             if len(items):
-                _axis_bar(ax, items, values, groups, log_scale=False)
+                _axis_bar(ax, items, values, groups, log_scale=False, show_xticklabels=is_bottom)
             ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
             ax.set_title(f"{s} | {flavor}", fontsize=8)
-            ax.set_ylabel("Count", fontsize=8)
+            if is_left:
+                ax.set_ylabel("Count", fontsize=8)
     fig.suptitle(f"{class_name} annotation - count", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     save_figure(
@@ -177,12 +184,15 @@ def _figure_04_class(
             items = list(levels)
             values = np.array([counts.get(lv, 0) for lv in items])
             groups = [_orientation(lv) for lv in items]
+            is_bottom = i == nrow - 1
+            is_left = j == 0
             if len(items):
-                _axis_bar(ax, items, values, groups, log_scale=False)
+                _axis_bar(ax, items, values, groups, log_scale=False, show_xticklabels=is_bottom)
             ax.set_ylim(0, 1)
             ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
             ax.set_title(f"{s} | {flavor}", fontsize=8)
-            ax.set_ylabel("Percentage", fontsize=8)
+            if is_left:
+                ax.set_ylabel("Percentage", fontsize=8)
     fig.suptitle(f"{class_name} annotation - percentage", fontsize=10)
     fig.tight_layout(rect=(0, 0, 1, 0.97))
     save_figure(
@@ -225,12 +235,19 @@ def _figure_05_class(
                     y = f["Freq"].to_numpy(dtype=float)
                 ax.bar(f["size"].to_numpy(), y, width=0.8)
                 ax.set_xticks(size_breaks)
+                is_bottom = i == nrow - 1
+                is_left = j == 0
+                if not is_bottom:
+                    ax.tick_params(axis="x", labelbottom=False)
+                if is_bottom:
+                    ax.set_xlabel("size (nt)", fontsize=8)
                 if kind == "counts":
                     ax.yaxis.set_major_formatter(StrMethodFormatter("{x:,.0f}"))
                 elif kind == "percentage":
                     ax.yaxis.set_major_formatter(PercentFormatter(xmax=1.0, decimals=0))
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
-                ax.set_ylabel(ylabel, fontsize=8)
+                if is_left:
+                    ax.set_ylabel(ylabel, fontsize=8)
         fig.suptitle(f"{class_name} read-size distribution ({title})", fontsize=10)
         fig.tight_layout(rect=(0, 0, 1, 0.97))
         base = (

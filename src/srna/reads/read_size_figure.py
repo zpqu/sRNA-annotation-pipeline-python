@@ -43,13 +43,12 @@ def read_size_overview_figure(samples: dict[str, pd.DataFrame], base: Path) -> P
         _panel_2d(ax_2d, plot)
 
         ax_size.set_title(sample, fontsize=8)
-        if row == 0:
-            ax_size.set_ylabel("n_unique")
-            ax_dens.set_ylabel("density")
-            ax_2d.set_ylabel("log2 count")
-        small_fonts(ax_size)
-        small_fonts(ax_dens)
-        small_fonts(ax_2d)
+        is_bottom = row == n - 1
+        for col_idx, ax in enumerate([ax_size, ax_dens, ax_2d]):
+            is_left = col_idx == 0
+            small_fonts(ax)
+            if not is_bottom:
+                ax.tick_params(axis="x", labelbottom=False)
 
     fig.tight_layout()
     save_figure(fig, base)

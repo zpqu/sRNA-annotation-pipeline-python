@@ -256,7 +256,14 @@ def _position_figure(
                 sub = agg[(agg["sample"] == s) & (agg["flavor"] == flavor)]
                 ax.bar(sub["position"], sub[col], width=1.0)
                 ax.set_title(f"{s} | {flavor}", fontsize=8)
-                ax.set_ylabel("Mean count", fontsize=8)
+                is_bottom = i == nrow - 1
+                is_left = j == 0
+                if not is_bottom:
+                    ax.tick_params(axis="x", labelbottom=False)
+                if is_bottom:
+                    ax.set_xlabel("position", fontsize=8)
+                if is_left:
+                    ax.set_ylabel("Mean count", fontsize=8)
                 small_fonts(ax)
         orient = "sense" if col == "sense" else "antisense"
         fig.suptitle(

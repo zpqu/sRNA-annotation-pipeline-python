@@ -240,9 +240,17 @@ def locus_distribution_figure(
             ax.plot([pos, pos], [q1, q3], color="black", lw=0.5)
             pos += 1
         ax.set_title(s, fontsize=9)
+        row_i = i // ncol
+        col_i = i % ncol
+        is_bottom = row_i == nrow - 1
+        is_left = col_i == 0
         ax.set_xticks(range(len(cats)))
-        ax.set_xticklabels(cats, rotation=45, ha="right", fontsize=8)
-        ax.set_ylabel(r"$\log_{10}(reads+1)$", fontsize=9)
+        if is_bottom:
+            ax.set_xticklabels(cats, rotation=45, ha="right", fontsize=8)
+        else:
+            ax.tick_params(axis="x", labelbottom=False)
+        if is_left:
+            ax.set_ylabel(r"$\log_{10}(reads+1)$", fontsize=9)
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")
     fig.suptitle("per-locus read abundance by annotation category", fontsize=10)
@@ -289,8 +297,16 @@ def rank_abundance_figure(
         ax.set_title(s, fontsize=9)
         ax.set_xscale("log")
         ax.set_yscale("log")
-        ax.set_xlabel("rank of locus (log10)", fontsize=8)
-        ax.set_ylabel("reads (log10)", fontsize=8)
+        row_i = i // ncol
+        col_i = i % ncol
+        is_bottom = row_i == nrow - 1
+        is_left = col_i == 0
+        if is_bottom:
+            ax.set_xlabel("rank of locus (log10)", fontsize=8)
+        else:
+            ax.tick_params(axis="x", labelbottom=False)
+        if is_left:
+            ax.set_ylabel("reads (log10)", fontsize=8)
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")
     fig.suptitle("rank-abundance curves per annotation category", fontsize=10)
@@ -325,8 +341,16 @@ def lorenz_figure(
             i_axis = np.concatenate([[0], np.arange(1, n + 1) / n])
             ax.plot(i_axis, cum, color="steelblue", lw=0.6)
         ax.set_title(s, fontsize=9)
-        ax.set_xlabel("cumulative fraction of loci", fontsize=8)
-        ax.set_ylabel("cumulative fraction of reads", fontsize=8)
+        row_i = i // ncol
+        col_i = i % ncol
+        is_bottom = row_i == nrow - 1
+        is_left = col_i == 0
+        if is_bottom:
+            ax.set_xlabel("cumulative fraction of loci", fontsize=8)
+        else:
+            ax.tick_params(axis="x", labelbottom=False)
+        if is_left:
+            ax.set_ylabel("cumulative fraction of reads", fontsize=8)
         ax.set_aspect("equal")
     for j in range(len(samples), nrow * ncol):
         axes[j // ncol][j % ncol].axis("off")

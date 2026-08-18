@@ -29,6 +29,14 @@ from srna.analysis.annotation_and_size_barplots import (
     _figure_05_class,
 )
 from srna.analysis.pirna_position_windows import _overlap_summary_figure, _position_figure
+from srna.reads.read_size_figure import read_size_overview_figure
+import srna.reads.read_size_figure as read_size_mod
+from srna.analysis.locus_abundance import (
+    locus_distribution_figure,
+    rank_abundance_figure,
+    lorenz_figure,
+)
+import srna.plotting as plotting_mod
 
 SAMPLES = ["Cumulus-cells", "Granulosa-cells"]
 
@@ -38,7 +46,12 @@ _ROW_PX = int(4.1 * 300)  # one 4.1 in row at the 300 dpi save resolution
 def _captured_figs(func, *args, **kwargs) -> dict[str, plt.Figure]:
     """Run *func* with ``save_figure`` stubbed to keep the figures open."""
     captured: dict[str, plt.Figure] = {}
-    module = barplots if func in (_figure_04_class, _figure_05_class) else pirna_position_windows
+    if func in (_figure_04_class, _figure_05_class):
+        module = barplots
+    elif func is read_size_overview_figure:
+        module = read_size_mod
+    else:
+        module = pirna_position_windows
 
     def fake_save(fig, base, dpi=300, close=False):
         base.parent.mkdir(parents=True, exist_ok=True)
@@ -56,21 +69,30 @@ def _captured_figs(func, *args, **kwargs) -> dict[str, plt.Figure]:
 
 
 def _assert_two_rows_and_full_axes(captured: dict[str, plt.Figure]) -> None:
+    n_samples = len(SAMPLES)
+    ncol = 2
     for name, fig in captured.items():
         fig.set_dpi(300)
         fig.canvas.draw()
         width, height = fig.get_size_inches() * fig.get_dpi()
-        assert len(fig.axes) == 2 * len(SAMPLES), f"{name}: panel count"
-        for ax in fig.axes:
+        assert len(fig.axes) == ncol * n_samples, f"{name}: panel count"
+        for idx, ax in enumerate(fig.axes):
+            row = idx // ncol
+            is_bottom = row == n_samples - 1
             xt = [t for t in ax.get_xticklabels() if t.get_text() != ""]
             yt = [t for t in ax.get_yticklabels() if t.get_text() != ""]
-            assert len(xt) >= 1, f"{name}: {ax.get_title()}: no x tick labels"
+            if is_bottom:
+                assert len(xt) >= 1, f"{name}: {ax.get_title()}: no x tick labels"
+                assert all(t.get_visible() for t in xt), f"{name}: hidden x labels"
+                for t in xt:
+                    bb = t.get_window_extent()
+                    assert bb.y0 >= 0, f"{name}: x label clipped below canvas"
+            else:
+                assert all(not t.get_visible() for t in xt), (
+                    f"{name}: {ax.get_title()}: non-bottom row should have hidden x labels"
+                )
             assert len(yt) >= 1, f"{name}: {ax.get_title()}: no y tick labels"
-            assert all(t.get_visible() for t in xt), f"{name}: hidden x labels"
             assert all(t.get_visible() for t in yt), f"{name}: hidden y labels"
-            for t in xt:
-                bb = t.get_window_extent()
-                assert bb.y0 >= 0, f"{name}: x label clipped below canvas"
             for t in yt:
                 bb = t.get_window_extent()
                 assert bb.x0 >= 0, f"{name}: y label clipped left of canvas"
@@ -109,13 +131,17 @@ class TestFigure04:
             "Figure_04b.matmiRNA_annotation_percentage_barplot",
         }
         _assert_two_rows_and_full_axes(captured)
+        ncol = 2
         for name, fig in captured.items():
-            for ax in fig.axes:
-                labels = {t.get_text() for t in ax.get_xticklabels() if t.get_text() != ""}
-                assert labels == set(READ_LEVELS), (
-                    f"{name}: {ax.get_title()}: x axis must show every category "
-                    f"including zero-count ones (missing {set(READ_LEVELS) - labels})"
-                )
+            for idx, ax in enumerate(fig.axes):
+                row = idx // ncol
+                is_bottom = row == len(SAMPLES) - 1
+                if is_bottom:
+                    labels = {t.get_text() for t in ax.get_xticklabels() if t.get_text() != ""}
+                    assert labels == set(READ_LEVELS), (
+                        f"{name}: {ax.get_title()}: x axis must show every category "
+                        f"including zero-count ones (missing {set(READ_LEVELS) - labels})"
+                    )
         assert (
             _png_height(tmp_path / "Figure_04b.matmiRNA_annotation_count_barplot.png")
             == 2 * _ROW_PX
@@ -214,3 +240,93 @@ class TestPositionFigure:
         }
         _assert_two_rows_and_full_axes(captured)
         assert _png_height(tmp_path / "Figure_06.piRNA_vs_tRNA_pos_barplot.png") == 2 * _ROW_PX
+
+
+class TestFigure01:
+    def test_shared_axis_labels(self, tmp_path):
+        """Figure_01: x-tick labels only on bottom row, y-axis labels only on left column."""
+        rng = np.random.default_rng(42)
+        samples_data = {}
+        for s in SAMPLES:
+            n = 100
+            samples_data[s] = pd.DataFrame({
+                "start": rng.integers(0, 100, n),
+                "end": rng.integers(100, 200, n),
+                "count": rng.integers(1, 1000, n),
+            })
+        captured = _captured_figs(
+            read_size_overview_figure, samples_data, tmp_path / "Figure_01.read_size_vs_count"
+        )
+        assert set(captured) == {"Figure_01.read_size_vs_count"}
+        fig = captured["Figure_01.read_size_vs_count"]
+        fig.set_dpi(300)
+        fig.canvas.draw()
+        ncol = 3
+        n_samples = len(SAMPLES)
+        for idx, ax in enumerate(fig.axes):
+            row = idx // ncol
+            col = idx % ncol
+            is_bottom = row == n_samples - 1
+            xt = [t for t in ax.get_xticklabels() if t.get_text() != ""]
+            if is_bottom:
+                assert len(xt) >= 1, f"row {row}, col {col}: no x tick labels"
+                assert all(t.get_visible() for t in xt), f"row {row}, col {col}: hidden x labels"
+            else:
+                assert all(not t.get_visible() for t in xt), (
+                    f"row {row}, col {col}: non-bottom row should have hidden x labels"
+                )
+            yt = [t for t in ax.get_yticklabels() if t.get_text() != ""]
+            assert len(yt) >= 1, f"row {row}, col {col}: no y tick labels"
+            assert all(t.get_visible() for t in yt), f"row {row}, col {col}: hidden y labels"
+
+
+class TestFigure03:
+    def _make_locus_tab(self):
+        cats = ["matmiRNA", "piRNA", "tRNA", "snoRNA"]
+        rng = np.random.default_rng(42)
+        rows = []
+        for s in SAMPLES:
+            for c in cats:
+                for locus_idx in range(5):
+                    for v in rng.lognormal(0, 1, 10):
+                        rows.append({
+                            "sample": s, "category": c, "locus": f"{c}_{locus_idx}",
+                            "n_reads": int(v),
+                        })
+        return pd.DataFrame(rows)
+
+    def test_locus_distribution_shared_axis_labels(self, tmp_path):
+        """Figure_03a: x-tick labels only on bottom row, y-axis labels only on left column."""
+        locus_tab = self._make_locus_tab()
+        figures_dir = tmp_path
+        locus_distribution_figure(locus_tab, SAMPLES, figures_dir)
+        fig_path = figures_dir / "Figure_03a_per_locus_distribution.png"
+        from PIL import Image
+        ncol = 2
+        nrow = int(np.ceil(len(SAMPLES) / ncol))
+        with Image.open(fig_path) as im:
+            assert im.size[1] == nrow * _ROW_PX
+
+    def test_rank_abundance_shared_axis_labels(self, tmp_path):
+        """Figure_03b: x-tick labels only on bottom row, y-axis labels only on left column."""
+        locus_tab = self._make_locus_tab()
+        figures_dir = tmp_path
+        rank_abundance_figure(locus_tab, SAMPLES, figures_dir)
+        fig_path = figures_dir / "Figure_03b_rank_abundance.png"
+        from PIL import Image
+        ncol = 2
+        nrow = int(np.ceil(len(SAMPLES) / ncol))
+        with Image.open(fig_path) as im:
+            assert im.size[1] == nrow * _ROW_PX
+
+    def test_lorenz_shared_axis_labels(self, tmp_path):
+        """Figure_03c: x-tick labels only on bottom row, y-axis labels only on left column."""
+        locus_tab = self._make_locus_tab()
+        figures_dir = tmp_path
+        lorenz_figure(locus_tab, SAMPLES, figures_dir)
+        fig_path = figures_dir / "Figure_03c_lorenz_matmiRNA.png"
+        from PIL import Image
+        ncol = 2
+        nrow = int(np.ceil(len(SAMPLES) / ncol))
+        with Image.open(fig_path) as im:
+            assert im.size[1] == nrow * _ROW_PX
