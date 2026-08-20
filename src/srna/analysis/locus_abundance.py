@@ -1,4 +1,4 @@
-"""Step-03 abundance analysis (port of ``03_abundance_by_category.R``).
+"""Step-03 abundance analysis.
 
 For each genome-feature category the per-locus read abundance is computed and
 described:
@@ -29,10 +29,10 @@ from srna.plotting import CATEGORY_COLS, fig_dims, save_figure
 _ABUNDANCE_CATEGORIES = ("matmiRNA", "snoRNA", "tRNA")
 _PIRNA = "piRNA"
 
-#: plot order / colours for the four abundance categories (R step-03).
+#: plot order / colours for the four abundance categories.
 CATEGORY_ORDER = ("matmiRNA", "piRNA", "tRNA", "snoRNA")
 
-#: feature id column used as the locus name per category (mirrors the R switch).
+#: feature id column used as the locus name per category.
 _LOCUS_COL: dict[str, str] = {"matmiRNA": "gene_name", "snoRNA": "gene_id", "tRNA": "gene_id"}
 
 
@@ -44,8 +44,7 @@ def _locus_reads(
     """Compute per-locus read abundance for one sample.
 
     matmiRNA/snoRNA/tRNA reads are re-mapped to every overlapping feature locus
-    (any overlap, strand-aware, as in the R script); piRNA reads use their read
-    position as the locus.
+    (any overlap, strand-aware); piRNA reads use their read position as the locus.
     """
     rows: list[pd.DataFrame] = []
     for cat in _ABUNDANCE_CATEGORIES:
@@ -120,7 +119,7 @@ def _spearman(log_a: pd.Series, log_b: pd.Series) -> float:
 
 
 def _wilcoxon_paired(a: pd.Series, b: pd.Series) -> float:
-    """Two-sided Wilcoxon signed-rank test, normal approximation (like R)."""
+    """Two-sided Wilcoxon signed-rank test, normal approximation."""
     d = (np.asarray(a) - np.asarray(b)).astype(np.float64)
     d = d[d != 0]
     n = len(d)

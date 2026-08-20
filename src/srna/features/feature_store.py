@@ -1,9 +1,8 @@
 """Feature DB store: builds all feature tables and caches them to parquet.
 
-Port of ``scripts/R/00_build_DB/00_build_annotation_DB.R``. Each feature table
-is rebuilt from its raw source file(s) in ``data/DB/`` and cached under
-``data/cache/<genome>/``. Caches are invalidated when any source file's mtime
-or size changes (recorded in a ``.meta.json`` sidecar).
+Each feature table is rebuilt from its raw source file(s) in ``data/DB/`` and
+cached under ``data/cache/<genome>/``. Caches are invalidated when any source
+file's mtime or size changes (recorded in a ``.meta.json`` sidecar).
 """
 
 from __future__ import annotations

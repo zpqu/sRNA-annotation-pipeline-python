@@ -1,7 +1,7 @@
 """Shared plotting helpers: publication figure sizing and PDF/PNG saving.
 
-Port of the R helpers in ``scripts/R/lib/init.R`` (``fig.dims``, ``small.font``)
-and a consistent save routine used by every figure-producing step.
+Provides consistent figure sizing and saving routines used by every
+figure-producing step.
 """
 
 from __future__ import annotations
@@ -35,7 +35,7 @@ STRATEGY_COLS = {"fully-contained": "#33a02c", "union": "#1f78b4", "any": "#e31a
 def fig_dims(n: int, ncol: int, per_h: float = 3.2, stack: int = 1) -> tuple[float, float]:
     """Return ``(width, height)`` in inches for a faceted figure.
 
-    Mirrors ``fig.dims`` in the R bootstrap: fixed 180 mm width, height derived
+    Mirrors the fig.dims helper: fixed 180 mm width, height derived
     from the number of facet rows and capped at 220 mm.
     """
     width = WIDTH_MM / 25.4

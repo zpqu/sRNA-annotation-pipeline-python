@@ -1,4 +1,4 @@
-"""Steps 04-05 figures (ports of ``04_figure_annotation.R`` / ``05_figure_size.R``).
+"""Steps 04-05 figures.
 
 Both steps read the consolidated count tables (``Table_02a`` unique reads,
 ``Table_02b`` all reads) produced by step 02 and draw faceted barplots with
@@ -71,7 +71,7 @@ _SIZE_CLASSES = ["read", "matmiRNA", "piRNA", "snoRNA", "tRNA"]
 
 
 def _orientation(item: str) -> str:
-    """Map an item label to sense / antisense / other (R ``orient.of``)."""
+    """Map an item label to sense / antisense / other."""
     if item.startswith("AS."):
         return "antisense"
     if item in ("intergenic", "other"):

@@ -1,7 +1,5 @@
 """Step-06 analysis: piRNA reads on tRNA/snoRNA gene windows.
 
-Port of ``06_tRNA_snoRNA_position.windows.R``.
-
 piRNA-annotated reads (sense to a piRNA locus) may be degradation products of
 tRNA/snoRNA genes. For each tRNA/snoRNA gene a 21 bp window is slid in 1 bp
 steps along the gene body, the mean read count per window position is plotted
@@ -187,8 +185,8 @@ def run_pirna_windows(
     """Run the full step-06 analysis."""
     tables_dir = out_dir / "tables"
     figures_dir = out_dir / "figures"
-    rdata_dir = out_dir / "rdata"
-    for d in (tables_dir, figures_dir, rdata_dir):
+    parquet_dir = out_dir / "parquet"
+    for d in (tables_dir, figures_dir, parquet_dir):
         d.mkdir(parents=True, exist_ok=True)
 
     trna_windows = sliding_windows(store.table("tRNA"))
@@ -215,11 +213,11 @@ def run_pirna_windows(
 
     if trna_profiles:
         pd.concat(trna_profiles, ignore_index=True).to_parquet(
-            rdata_dir / "piRNA_on_tRNA.20bp.dis.all.parquet"
+            parquet_dir / "piRNA_on_tRNA.20bp.dis.all.parquet"
         )
     if snorna_profiles:
         pd.concat(snorna_profiles, ignore_index=True).to_parquet(
-            rdata_dir / "piRNA_on_snoRNA.20bp.dis.all.parquet"
+            parquet_dir / "piRNA_on_snoRNA.20bp.dis.all.parquet"
         )
 
     ov = pd.concat(overlap_tabs, ignore_index=True)

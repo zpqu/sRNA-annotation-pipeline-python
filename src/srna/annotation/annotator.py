@@ -1,4 +1,4 @@
-"""Step-02 annotation engine (port of ``02_annotation_smallRNA.R``).
+"""Step-02 annotation engine.
 
 Reads are annotated as non-redundant unique reads. A sense pass walks the
 genomic-feature priority list (matmiRNA > piRNA > snoRNA > tRNA > RM >
@@ -174,7 +174,7 @@ def _assign_regions(
     mode: str,
     chroms: list[str],
 ) -> pd.Series:
-    """Port of ``mygeneFeature.R``: assign a gene-context region per hit read.
+    """Assign a gene-context region per hit read.
 
     Returns a Series keyed by the global read index. Sense regions are assigned
     in priority order (CDS > 5UTR > 3UTR > intron > up1k > down1k > RM), then

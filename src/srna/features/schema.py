@@ -14,10 +14,10 @@ pyranges):
 * ``source`` -- provenance (``refGene``, ``miRBase``, ...)
 * ``score``  -- optional numeric score (piRNA loci)
 
-The catalog in :data:`FEATURE_META` declares, per canonical type, the R-compatible
-output label, whether the feature is a flat GRanges (``gr``) or a grouped
-GRangesList (``grl``) whose elements must be deduplicated by ``feature_id``
-during overlap counting, and which column provides the feature id emitted into
+The catalog in :data:`FEATURE_META` declares, per canonical type, the output
+label, whether the feature is a flat DataFrame or a grouped DataFrame
+whose elements must be deduplicated by ``feature_id`` during overlap
+counting, and which column provides the feature id emitted into
 the annotated-read output.
 """
 
@@ -110,7 +110,7 @@ GENOMIC_FEATURES = [
 ]
 
 #: Gene-context features probed inside the matmiRNA/snoRNA/piRNA/tRNA
-#: annotation (mygeneFeature.R port), in region-priority order.
+#: annotation, in region-priority order.
 GENE_FEATURES = [
     "NM.CDS",
     "NM.5UTR",
@@ -174,8 +174,7 @@ def element_id_of(frame: pd.DataFrame, meta: FeatureMeta) -> pd.Series:
     """Return the per-element display id used as the read's ``feature_id``.
 
     For ``gr`` features this is the catalog ``id_col``. For ``grl`` features it
-    is the gene name, falling back to the gene id (mirrors ``feature.id.vector``
-    in the R annotation script).
+    is the gene name, falling back to the gene id.
     """
     if meta.kind == "gr":
         return frame[meta.id_col].astype(str)

@@ -1,7 +1,7 @@
 """Command-line interface: ``srna`` entry point.
 
-Runs the full small-RNA annotation pipeline. Options mirror the environment
-variables of the original R runner (``run_smallRNA_annotation.sh``).
+Runs the full small-RNA annotation pipeline. Options include the genome
+assembly, sense-overlap strategy, chromosome naming convention and more.
 """
 
 from __future__ import annotations
@@ -21,7 +21,7 @@ def build_parser() -> argparse.ArgumentParser:
     """Return the ``srna`` argument parser."""
     parser = argparse.ArgumentParser(
         prog="srna",
-        description="Small-RNA annotation pipeline (Python port of the R pipeline).",
+        description="Small-RNA annotation pipeline.",
     )
     parser.add_argument(
         "--root",
