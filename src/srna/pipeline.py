@@ -1,4 +1,4 @@
-"""Pipeline orchestration (port of ``run_smallRNA_annotation.sh``).
+"""Pipeline orchestration.
 
 Runs the whole small-RNA annotation pipeline for a :class:`PipelineConfig`:
 
@@ -64,9 +64,9 @@ def run_build_feature_db(store: FeatureStore) -> None:
 def run_read_collapse(resolver: PathResolver, samples: list[str]) -> CollapseResult:
     """Collapse BAMs and write shared read tables + Figure_01."""
     tables_dir = resolver.output_base / "tables"
-    rdata_dir = resolver.output_base / "rdata"
+    parquet_dir = resolver.output_base / "parquet"
     figures_dir = resolver.output_base / "figures"
-    for d in (tables_dir, rdata_dir, figures_dir):
+    for d in (tables_dir, parquet_dir, figures_dir):
         d.mkdir(parents=True, exist_ok=True)
 
     result = CollapseResult()
@@ -80,7 +80,7 @@ def run_read_collapse(resolver: PathResolver, samples: list[str]) -> CollapseRes
         unique, total = collapse_bam(bam)
         result.reads[sample] = unique
         result.total_reads[sample] = total
-        unique.to_parquet(rdata_dir / f"{sample}.bam.unique.parquet")
+        unique.to_parquet(parquet_dir / f"{sample}.bam.unique.parquet")
         t1a.append(build_table_01a(unique, total, sample))
         t1b.append(build_table_01b(unique, sample))
         t1c.append(build_table_01c(unique, sample))
@@ -120,7 +120,7 @@ def run_annotation_steps(
         sdir = resolver.strategy_dir(config.strategy)
     else:
         sdir = resolver.output_base
-    for d in ("tables", "figures", "rdata"):
+    for d in ("tables", "figures", "parquet"):
         (sdir / d).mkdir(parents=True, exist_ok=True)
 
     samples = list(step01.reads)
@@ -134,7 +134,7 @@ def run_annotation_steps(
             index=False,
             na_rep="NA",
         )
-        out.to_parquet(sdir / "rdata" / f"{sample}.bam.annotated.parquet")
+        out.to_parquet(sdir / "parquet" / f"{sample}.bam.annotated.parquet")
 
         rows_u = [
             {"sample": sample, "category": c, "item": i, "Freq": n}

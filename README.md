@@ -129,13 +129,13 @@ output/
   tables/     CSV tables (Table_01a–d, Table_02a/b, Table_03a/b, Table_06, ...)
   figures/    PDF + PNG figures (Figure_01, Figure_03a–c, Figure_04a–e,
                                   Figure_05a/b, Figure_06, Figure_s01a/b)
-  rdata/      parquet intermediates (unique reads, annotations, position profiles)
+  parquet/    parquet intermediates (unique reads, annotations, position profiles)
   pipeline_summary.md   end-of-pipeline report
 output/comparison/
   tables/     overlap-rule comparison tables (Table_s01a–e) + shared tables
   figures/    comparison figures + Figure_01
   fully_contained/  union/  any/
-                per-strategy copies of tables/, figures/ and rdata/
+                per-strategy copies of tables/, figures/ and parquet/
 ```
 
 Key tables:

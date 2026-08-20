@@ -1,6 +1,6 @@
 """Build the refGene-derived feature tables (``refGene.gtf``).
 
-Port of the ``refGene GTF`` section of ``00_build_annotation_DB.R``:
+Parses a UCSC refGene GTF and produces feature tables:
 
 * ``NM_`` transcripts -> exon / CDS / 5UTR / 3UTR (per transcript), introns,
   transcript spans (``NM.mRNA``) and +/- 1 kb flanks (``NM.up1k``/``NM.down1k``).

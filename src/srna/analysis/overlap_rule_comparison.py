@@ -1,7 +1,5 @@
 """Step s01: three-way comparison of overlap-rule strategies.
 
-Port of ``s01_compare_overlap_rules.R``.
-
 Only meaningful in comparison mode. The three strategies (fully-contained,
 union, any) differ only in the sense overlap rule; this step compares their
 step-02 outputs: annotation composition, per-category read sizes, category
@@ -108,10 +106,10 @@ def _read_movement(
 ) -> pd.DataFrame:
     """Cross-tabulate read movement fully-contained -> *to_col* strategy.
 
-    Mirrors the R ``s01`` merge: the *any* table is the base (its counts are
-    used for both tables), the fully-contained category is carried along as
-    ``typeB`` and the target strategy's category as *to_col*. Reads present in
-    only one strategy get the missing category as ``other``.
+    The *any* table is the base (its counts are used for both tables), the
+    fully-contained category is carried along as ``typeB`` and the target
+    strategy's category as *to_col*. Reads present in only one strategy get
+    the missing category as ``other``.
     """
     to_key = _TYPE_TO_STRATEGY[to_col]
     rows: list[pd.DataFrame] = []

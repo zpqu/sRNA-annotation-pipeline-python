@@ -1,7 +1,6 @@
 """Filesystem layout: every path used by the pipeline, derived from one root.
 
-Centralises the directory layout that the R pipeline derived from
-``scripts/R/lib/init.R``:
+Centralises the directory layout:
 
 * ``data/bam/``   -- input BAM files
 * ``data/DB/``    -- raw annotation files for the reference genome
@@ -34,7 +33,7 @@ def derive_sample_label(bam_name: str) -> str:
     """Derive a sample label from a BAM file name.
 
     Strips ``.bam`` and then a trailing ``.bwa``/``.bowtie2`` aligner suffix,
-    exactly like ``init.R``: ``Cumulus-cells.bwa.bam -> Cumulus-cells``.
+    e.g. ``Cumulus-cells.bwa.bam -> Cumulus-cells``.
     """
     name = bam_name
     for suffix in _SAMPLES_RE:

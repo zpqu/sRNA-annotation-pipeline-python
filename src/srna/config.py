@@ -1,14 +1,14 @@
 """Pipeline configuration: genome, annotation strategy and chromosome style.
 
 The behaviour of every pipeline step is controlled by a :class:`PipelineConfig`
-object, which mirrors the environment-variable driven bootstrap of the original
-R pipeline (``scripts/R/lib/init.R``).
+object, which controls the genome, sense-overlap rule and chromosome naming
+convention.
 
 Sense-overlap rules
 -------------------
 ``fully-contained``
     a read is annotated to a feature only if the read is fully contained in the
-    feature (R ``findOverlaps type="within"``).
+    feature.
 ``union``
     read within feature **or** feature within read (captures long reads
     spanning a small feature).
@@ -42,7 +42,7 @@ class Strategy(Enum):
 
     @property
     def overlap_rule(self) -> str:
-        """Return the R-overlap rule used for the sense pass."""
+        """Return the overlap rule used for the sense pass."""
         if self is Strategy.UNION:
             return "union"
         if self is Strategy.ANY:
@@ -69,8 +69,8 @@ _RULE_ALIASES: dict[str, str] = {
 def canon_strategy(value: str) -> Strategy:
     """Canonicalize a strategy string to a :class:`Strategy`.
 
-    Mirrors ``init.R`` ``canon.strategy``: lowercased, whitespace/underscores
-    collapsed to dashes, then matched by prefix.
+    Normalizes: lowercased, whitespace/underscores collapsed to dashes,
+    then matched by prefix.
     """
     normalized = re.sub(r"[ _]+", "-", value.strip().lower())
     for rule, canonical in _RULE_ALIASES.items():
@@ -112,7 +112,7 @@ class PipelineConfig:
 
     @classmethod
     def from_env(cls, env: dict[str, str] | None = None) -> PipelineConfig:
-        """Build a config from environment variables (mirrors ``init.R``).
+        """Build a config from environment variables.
 
         Reads ``SMALLRNA_GENOME``, ``SMALLRNA_STRATEGY``,
         ``SMALLRNA_CHR_STYLE`` and ``SMALLRNA_FORCE_REBUILD_DB``.

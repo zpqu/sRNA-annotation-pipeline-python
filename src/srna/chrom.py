@@ -1,6 +1,6 @@
 """Chromosome-name normalization and primary-chromosome filtering.
 
-Port of the helpers in ``scripts/R/00_build_DB/00_build_annotation_DB.R``:
+Provides helpers for:
 
 * ``normalize_seqnames`` -- make every chromosome name agree with the reads
   (``chr1``/``1``/``Chr1`` -> ``chr1``, ``MT`` -> ``chrM``).

@@ -2,8 +2,7 @@
 
 Thin wrapper around pyranges joins. pyranges' ``containment`` mode has
 inconsistent strand semantics, so every mode is implemented as a strand-aware
-(or strand-ignoring) *any-overlap* join plus an explicit containment filter,
-which is exactly what the R pipeline's ``findOverlaps(type="within")`` computes.
+(or strand-ignoring) *any-overlap* join plus an explicit containment filter.
 
 pyranges 0.1.4 is unstable on multi-chromosome joins with pandas 3 (it chokes
 when a chromosome is present in only one of the two inputs), so work is split
@@ -78,7 +77,7 @@ def _join_chrom(
     if keep_strand:
         # pyranges 0.1.4 join() ignores the Strand column even when both inputs
         # are stranded (and `strandedness="same"` crashes), so enforce the
-        # same-strand condition ourselves (matches findOverlaps' default).
+        # same-strand condition ourselves.
         joined = joined[joined["Strand"] == joined["Strand_b"]]
     if mode == "within":
         contained = (joined["Start_b"] <= joined["Start"]) & (joined["End_b"] >= joined["End"])

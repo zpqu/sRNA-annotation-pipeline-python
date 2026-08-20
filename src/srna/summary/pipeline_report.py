@@ -1,7 +1,5 @@
 """Step 10: end-of-pipeline summary report.
 
-Port of ``10_pipeline_summary.R``.
-
 Writes ``<out.base>/pipeline_summary.md`` (output-file inventory, results
 summary, sanity checks) and ``<out.base>/tables/Table_10_sanity_checks.csv``.
 Single-strategy runs summarise ``output/``; comparison runs summarise
@@ -92,7 +90,7 @@ def run_pipeline_summary(
     r.rep("## 1. Output files\n")
     dir_map = {
         "tables": "Step 01: read-preprocessing tables (shared)",
-        "rdata": "Step 01: read GRanges objects (shared)",
+        "parquet": "Step 01: read objects (shared)",
         "figures": (
             "Steps 01, 03-06: read-size, annotation, abundance and " "position-distribution figures"
         ),
@@ -101,7 +99,7 @@ def run_pipeline_summary(
         for st in strategies:
             sub = st.dir_name
             dir_map[f"{sub}/tables"] = f"Steps 02, 03, 10: {st.value}-strategy count tables"
-            dir_map[f"{sub}/rdata"] = f"Steps 02, 06: {st.value}-strategy annotated-read objects"
+            dir_map[f"{sub}/parquet"] = f"Steps 02, 06: {st.value}-strategy annotated-read objects"
             dir_map[f"{sub}/figures"] = f"Steps 03-06: {st.value}-strategy figures"
     n_files = 0
     for d, desc in dir_map.items():

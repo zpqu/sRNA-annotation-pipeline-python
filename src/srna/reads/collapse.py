@@ -1,8 +1,7 @@
 """Collapse BAM reads into non-redundant reads with per-position counts.
 
-The BAM is streamed contig by contig (never loaded whole), matching the
-step-01 behaviour of the R pipeline: reads sharing the same
-(chrom, start, end, strand) are reported once with a ``count`` column.
+The BAM is streamed contig by contig (never loaded whole). Reads sharing the
+same (chrom, start, end, strand) are reported once with a ``count`` column.
 """
 
 from __future__ import annotations
@@ -86,7 +85,7 @@ def _unique_counts(
 
 
 def add_poskey(df: pd.DataFrame) -> pd.DataFrame:
-    """Add the R-compatible ``poskey`` column (chrom:start:end:strand, 1-based)."""
+    """Add the ``poskey`` column (chrom:start:end:strand, 1-based)."""
     out = df.copy()
     out["poskey"] = (
         out["chrom"].astype(str)

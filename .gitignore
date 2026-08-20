@@ -14,6 +14,7 @@ dist/
 
 # Pipeline outputs
 output/
+output_*/
 logs/
 
 # Generated feature caches (large)
